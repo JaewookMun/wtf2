@@ -25,4 +25,14 @@ public class Dept {
 
     @OneToMany(mappedBy = "parent")
     private List<Dept> children = new ArrayList<>();
+
+
+    /**
+     * 연관관계 메서드
+     */
+    public void setParent(Dept parent) {
+        this.parent = parent;
+        parent.getChildren().add(this);
+    }
+
 }

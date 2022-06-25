@@ -14,6 +14,10 @@ public class ApprovalLine {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dept_id")
+    private Dept dept;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "first_authorizer_id")
     private Employee firstAuthorizer;
 

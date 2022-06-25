@@ -5,6 +5,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter @Setter
@@ -27,4 +29,15 @@ public class Reply {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private Reply parent;
+
+    @OneToMany(mappedBy = "parent")
+    private List<Reply> children = new ArrayList<>();
+
+    /**
+     * 연관관계 메서드
+     */
+    public void setParent(Reply parent) {
+        this.parent = parent;
+        parent.getChildren().add(this);
+    }
 }

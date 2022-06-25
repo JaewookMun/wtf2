@@ -16,7 +16,6 @@ public class Board {
     @Column(name = "board_id")
     private Long id;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id")
     private Employee writer;
@@ -27,5 +26,24 @@ public class Board {
 
     @OneToMany(mappedBy = "board")
     private List<File> files = new ArrayList<>();
+
+    @OneToMany(mappedBy = "board")
+    private List<Reply> replies = new ArrayList<>();
+
+    /**
+     * 연관관계 메서드
+     */
+    public void addFile(File file) {
+        files.add(file);
+        file.setBoard(this);
+    }
+
+    /**
+     * 연관관계 메서드
+     */
+    public void addReply(Reply reply) {
+        replies.add(reply);
+        reply.setBoard(this);
+    }
 
 }
