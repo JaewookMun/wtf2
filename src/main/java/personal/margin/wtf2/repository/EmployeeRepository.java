@@ -17,8 +17,8 @@ public class EmployeeRepository {
         em.persist(employee);
     }
 
-    public void findOne(Long id) {
-        em.find(Employee.class, id);
+    public Employee findOne(Long id) {
+        return em.find(Employee.class, id);
     }
 
     public List<Employee> findAll() {
@@ -30,5 +30,15 @@ public class EmployeeRepository {
         return em.createQuery("select e from Employee e where e.name = :name", Employee.class)
                 .setParameter("name", name)
                 .getResultList();
+    }
+
+    public List<Employee> findByGUID(String guid) {
+        return em.createQuery("select e from Employee e where e.guid = :guid", Employee.class)
+                .setParameter("guid", guid)
+                .getResultList();
+    }
+
+    public void flush() {
+        em.flush();
     }
 }
