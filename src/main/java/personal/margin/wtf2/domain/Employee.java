@@ -2,11 +2,13 @@ package personal.margin.wtf2.domain;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
 @Entity
 @Getter @Setter
+@DynamicUpdate
 public class Employee {
 
     @Id @GeneratedValue

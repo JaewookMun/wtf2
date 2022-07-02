@@ -2,6 +2,7 @@ package personal.margin.wtf2.domain;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Entity
 @Getter @Setter
+@DynamicUpdate
 public class Board {
 
     @Id @GeneratedValue
@@ -23,6 +25,7 @@ public class Board {
     private String title;
     private String content;
     private LocalDateTime postDate;
+    private LocalDateTime modifiedDate;
 
     @OneToMany(mappedBy = "board")
     private List<File> files = new ArrayList<>();
