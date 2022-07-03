@@ -24,7 +24,7 @@ public class Board {
 
     private String title;
     private String content;
-    private LocalDateTime postDate;
+    private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
     @OneToMany(mappedBy = "board")

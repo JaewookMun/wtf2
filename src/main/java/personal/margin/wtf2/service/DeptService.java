@@ -9,8 +9,8 @@ import personal.margin.wtf2.repository.DeptRepository;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class DeptService {
 
     private final DeptRepository deptRepository;

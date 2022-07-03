@@ -16,6 +16,8 @@ public class Reply {
     @Column(name = "reply_id")
     private Long id;
 
+    private String content;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id")
     private Employee writer;
@@ -24,7 +26,8 @@ public class Reply {
     @JoinColumn(name = "board_id")
     private Board board;
 
-    private LocalDateTime replyDate;
+    private LocalDateTime createdDate;
+    private LocalDateTime modifiedDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")

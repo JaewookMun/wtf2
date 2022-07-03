@@ -12,8 +12,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class BoardService {
 
     private final BoardRepository boardRepository;
@@ -21,7 +21,7 @@ public class BoardService {
 
     @Transactional
     public Long post(Board board, List<File> files) {
-        board.setPostDate(LocalDateTime.now());
+        board.setCreatedDate(LocalDateTime.now());
         for (File file : files) {
             board.addFile(file);
             fileRepository.save(file);
@@ -32,30 +32,36 @@ public class BoardService {
     }
 
     @Transactional
-    public Long update(Long id, Board board) {
+    public Long updateBoard(Long id, Board board) {
         Board findBoard = boardRepository.findOne(id);
 
         findBoard.setTitle(board.getTitle());
         findBoard.setContent(board.getContent());
         findBoard.setModifiedDate(LocalDateTime.now());
 
-        // todo
-//        List<File> savedFileList = findBoard.getFiles();
-//
-//        for (File savedFile : savedFileList) {
-//            for (File file : board.getFiles()) {
-//                File one = fileRepository.findOne(file.getId());
-//
-//                if(savedFile.getId() == one.getId()) {
-//
-//                }
-//
-//
-//            }
-//        }
-
+        updateFiles(id, board.getFiles());
 
         return id;
+    }
+
+    private void updateFiles(Long boardId, List<File> newFiles) {
+        List<File> attachedFiles = fileRepository.findAllByBoard(boardId);
+
+        for (File attached : attachedFiles) {
+            boolean attachedExistenceFlag = false;
+
+            for (File file : newFiles) {
+                if(file.getId() == null) {
+                    fileRepository.save(file);
+                }
+                else if(file.getId() == attached.getId()) {
+                    attached.setName(file.getName());
+                    attached.setPath(file.getPath());
+                    attachedExistenceFlag = true;
+                }
+            }
+            if(!attachedExistenceFlag) fileRepository.delete(attached);
+        }
     }
 
     /*

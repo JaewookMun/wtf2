@@ -18,17 +18,18 @@ public class FileRepository {
         em.persist(file);
     }
 
+    public void delete(File file) {
+        em.remove(file);
+    }
+
     public File findOne(Long id) {
         return em.find(File.class, id);
     }
 
-    public List<File> findAllByBoard(Board board) {
+    public List<File> findAllByBoard(Long boardId) {
         return em.createQuery("select f from File f where f.board.id = :boardId", File.class)
-                .setParameter("boardId", board.getId())
+                .setParameter("boardId", boardId)
                 .getResultList();
     }
-
-
-
 
 }

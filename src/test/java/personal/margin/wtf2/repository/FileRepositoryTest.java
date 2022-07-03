@@ -44,7 +44,7 @@ class FileRepositoryTest {
 
         em.flush();
 
-        fileRepository.findAllByBoard(board);
+        fileRepository.findAllByBoard(board.getId());
 
         //then
     }
