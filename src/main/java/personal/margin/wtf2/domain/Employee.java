@@ -27,4 +27,10 @@ public class Employee {
     @Enumerated(EnumType.STRING)
     private Authority authority;
 
+
+    // 연관관계 편의 메서드
+    public void setDept(Dept dept) {
+        this.dept = dept;
+        dept.getEmployees().add(this);
+    }
 }
