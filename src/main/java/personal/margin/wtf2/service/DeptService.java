@@ -16,7 +16,11 @@ public class DeptService {
     private final DeptRepository deptRepository;
 
     @Transactional
-    public Long createDept(Dept dept) {
+    public Long createDept(Dept dept, Long parentId) {
+        Dept parent = deptRepository.findOne(parentId);
+        dept.setParent(parent);
+        dept.setDisplayOrder(parent.getDisplayOrder() + parent.getChildList().size() + 1);
+
         deptRepository.save(dept);
         return dept.getId();
     }
@@ -28,7 +32,7 @@ public class DeptService {
         findOne.setName(dept.getName());
         findOne.setDisplayOrder(dept.getDisplayOrder());
         findOne.setParent(dept.getParent());
-        findOne.setChildren(dept.getChildren());
+        findOne.setChildList(dept.getChildList());
 
         return id;
     }

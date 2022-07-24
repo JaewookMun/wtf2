@@ -4,8 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import personal.margin.wtf2.domain.Board;
+import personal.margin.wtf2.domain.Employee;
 import personal.margin.wtf2.domain.File;
+import personal.margin.wtf2.domain.Reply;
 import personal.margin.wtf2.repository.BoardRepository;
+import personal.margin.wtf2.repository.EmployeeRepository;
 import personal.margin.wtf2.repository.FileRepository;
 
 import java.time.LocalDateTime;
@@ -18,13 +21,13 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final FileRepository fileRepository;
+    private final EmployeeRepository employeeRepository;
 
     @Transactional
     public Long post(Board board, List<File> files) {
         board.setCreatedDate(LocalDateTime.now());
         for (File file : files) {
             board.addFile(file);
-            fileRepository.save(file);
         }
 
         boardRepository.save(board);
@@ -44,7 +47,8 @@ public class BoardService {
         return id;
     }
 
-    private void updateFiles(Long boardId, List<File> newFiles) {
+    @Transactional
+    public void updateFiles(Long boardId, List<File> newFiles) {
         List<File> attachedFiles = fileRepository.findAllByBoard(boardId);
 
         for (File attached : attachedFiles) {
@@ -62,6 +66,18 @@ public class BoardService {
             }
             if(!attachedExistenceFlag) fileRepository.delete(attached);
         }
+    }
+
+    @Transactional
+    public Long addReply(Long boardId, Long employeeId, Reply reply) {
+        Board board = boardRepository.findOne(boardId);
+        Employee replier = employeeRepository.findOne(employeeId);
+
+        reply.setWriter(replier);
+
+        board.addReply(reply);
+
+        return reply.getId();
     }
 
     /*

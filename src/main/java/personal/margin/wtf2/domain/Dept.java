@@ -1,5 +1,6 @@
 package personal.margin.wtf2.domain;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
@@ -8,10 +9,9 @@ import org.springframework.lang.Nullable;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Entity
-@Getter @Setter
+@Getter @Setter//(value = AccessLevel.PROTECTED)
 @DynamicUpdate
 public class Dept {
 
@@ -28,7 +28,7 @@ public class Dept {
     private int displayOrder;
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
-    private List<Dept> children = new ArrayList<>();
+    private List<Dept> childList = new ArrayList<>();
 
     @OneToMany(mappedBy = "dept", cascade = CascadeType.PERSIST)
     private List<Employee> employees = new ArrayList<>();
@@ -38,7 +38,7 @@ public class Dept {
      */
     public void setParent(Dept parent) {
         this.parent = parent;
-        parent.getChildren().add(this);
+        parent.getChildList().add(this);
     }
 
 
