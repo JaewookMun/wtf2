@@ -2,6 +2,7 @@ package personal.margin.wtf2.domain;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.lang.Nullable;
@@ -33,6 +34,22 @@ public class Dept {
     @OneToMany(mappedBy = "dept", cascade = CascadeType.PERSIST)
     private List<Employee> employees = new ArrayList<>();
 
+    public static Dept createRootDept(String name) {
+        Dept rootDept = new Dept();
+        rootDept.setName(name);
+
+        return rootDept;
+    }
+
+    // 생성 메서드
+    public static Dept createDept(String name, Dept parent) {
+        Dept dept = new Dept();
+        dept.setName(name);
+        dept.setParent(parent);
+
+        return dept;
+    }
+
     /**
      * 연관관계 메서드
      */
@@ -41,13 +58,4 @@ public class Dept {
         parent.getChildList().add(this);
     }
 
-
-    // 생성 메서드
-    public static Dept createDept(String name, @Nullable Dept parent) {
-        Dept dept = new Dept();
-        dept.setName(name);
-        dept.setParent(parent);
-
-        return dept;
-    }
 }

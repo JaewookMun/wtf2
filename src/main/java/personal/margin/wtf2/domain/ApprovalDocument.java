@@ -36,4 +36,9 @@ public class ApprovalDocument {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "approval_line_id")
     private ApprovalLine approvalLine;
+
+    public void addComent(String comment) {
+        this.comment = comment;
+        this.processedDate = LocalDateTime.now();
+    }
 }

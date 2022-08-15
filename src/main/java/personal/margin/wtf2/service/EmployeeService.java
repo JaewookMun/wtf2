@@ -3,7 +3,9 @@ package personal.margin.wtf2.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import personal.margin.wtf2.domain.Dept;
 import personal.margin.wtf2.domain.Employee;
+import personal.margin.wtf2.repository.DeptRepository;
 import personal.margin.wtf2.repository.EmployeeRepository;
 
 import java.util.List;
@@ -14,11 +16,16 @@ import java.util.List;
 public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
+    private final DeptRepository deptRepository;
 
     @Transactional
-    public Long join(Employee employee) {
+    public Long join(Employee employee, Long deptId) {
 
         validateDuplicateEmployee(employee);
+
+        Dept dept = deptRepository.findOne(deptId);
+        employee.setDept(dept);
+
         employeeRepository.save(employee);
 
         return employee.getId();
@@ -37,9 +44,11 @@ public class EmployeeService {
 
         Employee findOne = employeeRepository.findOne(id);
 
-        findOne.setName(employee.getName());
-        findOne.setPassword(employee.getPassword());
-        findOne.setAuthority(employee.getAuthority());
+//        findOne.setName(employee.getName());
+//        findOne.setPassword(employee.getPassword());
+//        findOne.setAuthority(employee.getAuthority());
+
+        findOne.update(employee.getName(), employee.getPassword(), employee.getAuthority());
         findOne.setDept(employee.getDept());
 
         return id;

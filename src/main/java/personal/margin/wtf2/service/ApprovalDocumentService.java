@@ -40,14 +40,15 @@ public class ApprovalDocumentService {
     }
 
     @Transactional
-    public Long proceedDocumentProcess(Long approvalDocumentId, boolean approvalFlag, String comment) {
+    public Long proceedDocument(Long approvalDocumentId, boolean approvalFlag, String comment) {
         ApprovalDocument foundDocument = documentRepository.findOne(approvalDocumentId);
+
+//        foundDocument.proceed
 
         if(approvalFlag) foundDocument.setStatus(ProcessStatus.APPROVED);
         else foundDocument.setStatus(ProcessStatus.REJECTED);
 
-        foundDocument.setComment(comment);
-        foundDocument.setProcessedDate(LocalDateTime.now());
+        foundDocument.addComent(comment);
 
         return approvalDocumentId;
     }

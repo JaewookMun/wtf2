@@ -16,10 +16,16 @@ public class DeptService {
     private final DeptRepository deptRepository;
 
     @Transactional
-    public Long createDept(Dept dept, Long parentId) {
-        Dept parent = deptRepository.findOne(parentId);
-        dept.setParent(parent);
-        dept.setDisplayOrder(parent.getDisplayOrder() + parent.getChildList().size() + 1);
+    public Long saveDept(String name, Long parentId) {
+
+        Dept dept = null;
+
+        if(parentId == null) {
+            dept = Dept.createRootDept(name);
+        } else {
+            Dept parent = deptRepository.findOne(parentId);
+            dept = Dept.createDept(name, parent);
+        }
 
         deptRepository.save(dept);
         return dept.getId();
