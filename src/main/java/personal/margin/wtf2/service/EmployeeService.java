@@ -54,6 +54,10 @@ public class EmployeeService {
         return id;
     }
 
+    public Employee findOne(Long employeeId) {
+        return employeeRepository.findOne(employeeId);
+    }
+
     public List<Employee> findEmployees() {
         return employeeRepository.findAll();
     }
