@@ -1,5 +1,9 @@
 # WTF2, Work Together Finish Faster
 
-### side project imitating ERP system 
-- department
-- electronic document process
+--- 
+<br>
+
+### ERP System Service 
+- 조직도 관리
+- 업무관리 게시판
+- 전자문서 결재
