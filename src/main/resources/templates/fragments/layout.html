@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head th:fragment="frag-head">
+    <meta charset="UTF-8">
+    <title>home</title>
+
+    <link rel="stylesheet" href="/modules/bootstrap-5.3.3-dist/css/bootstrap.min.css">
+</head>
+<body>
+    <header th:replace="/fragments/header :: f-header" />
+
+    <section layout:fragment="content" />
+
+    <footer th:replace="/fragments/footer :: f-footer" />
+</body>
+</html>
