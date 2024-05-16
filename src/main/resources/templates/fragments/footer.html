@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    <footer class="f-footer" th:fragment="f-footer">
-        <div>footer</div>
+    <footer class="content-footer footer bg-footer-theme" th:fragment="f-footer">
+        <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+            <div class="mb-2 mb-md-0">
+                <span>©</span>
+                <script>
+                    document.write(new Date().getFullYear());
+                </script>
+                <span>, made by Jaewook</span>
+            </div>
+
+        </div>
     </footer>
 </html>
