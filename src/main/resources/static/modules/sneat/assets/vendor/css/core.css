@@ -225,8 +225,9 @@ sup {
 
 a {
   color: #696cff;
-  text-decoration: none;
+  text-decoration: none !important;
 }
+
 a:hover {
   color: #5f61e6;
 }
@@ -14633,8 +14634,8 @@ body {
 .container-lg,
 .container-xl,
 .container-xxl {
-    padding-right: 1.625rem;
-    padding-left: 1.625rem;
+    padding-right: 1.625rem !important;
+    padding-left: 1.625rem !important;
   }
 }
 
