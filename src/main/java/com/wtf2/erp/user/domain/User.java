@@ -1,5 +1,6 @@
 package com.wtf2.erp.user.domain;
 
+import com.wtf2.erp.company.domain.Company;
 import com.wtf2.erp.dept.domain.Dept;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -7,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "`user`")
+@Table(name = "`USER`")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class User {
@@ -30,5 +31,9 @@ public class User {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dept_id")
     private Dept dept;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id")
+    private Company company;
 
 }
