@@ -14,7 +14,9 @@
             content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     >
     <title>WTF2</title>
+    <link rel="stylesheet" href="/css/custom.css">
 
+    <script src="/modules/jquery-3.7.0/jquery-3.7.0.min.js"></script>
     <link rel="stylesheet" href="/modules/sneat/assets/vendor/fonts/boxicons.css">
     <link rel="stylesheet" href="/modules/sneat/assets/vendor/css/core.css" class="template-customizer-core-css">
     <link rel="stylesheet" href="/modules/sneat/assets/vendor/css/theme-default.css" class="template-customizer-theme-css">
@@ -76,7 +78,7 @@
 
                         <p class="text-center">
                             <span>처음이신가요?</span>
-                            <a href="" id="joinModal" data-bs-toggle="modal" data-bs-target="#basicModal">
+                            <a href="" data-bs-toggle="modal" data-bs-target="#registerModal">
                                 <span>계정 새로 생성하기</span>
                             </a>
                         </p>
@@ -87,46 +89,49 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="basicModal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel1">계정 생성하기</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body ask-question">
                     <div class="row">
-                        <div class="col-5 text-center">
-                            <button class="btn btn-primary">신규 기업</button>
+                        <p>기존에 등록한 고객이신가요?</p>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 text-end">
+                            <button id="newCompanyBtn" class="btn btn-primary btn-join">신규 기업</button>
                         </div>
-                        <div class="col-5 text-center">
-                            <button class="btn btn-gray">기존 기업</button>
+                        <div class="col-6 text-start">
+                            <button id="presentCompanyBtn" class="btn btn-gray btn-join">기존 기업</button>
                         </div>
                     </div>
-<!--                    <div class="row">-->
-<!--                        <div class="col mb-3">-->
-<!--                            <label for="nameBasic" class="form-label">Name</label>-->
-<!--                            <input type="text" id="nameBasic" class="form-control" placeholder="Enter Name" />-->
-<!--                        </div>-->
-<!--                    </div>-->
-
-<!--                    <div class="row g-2">-->
-<!--                        <div class="col mb-0">-->
-<!--                            <label for="emailBasic" class="form-label">Email</label>-->
-<!--                            <input type="text" id="emailBasic" class="form-control" placeholder="xxxx@xxx.xx" />-->
-<!--                        </div>-->
-<!--                        <div class="col mb-0">-->
-<!--                            <label for="dobBasic" class="form-label">DOB</label>-->
-<!--                            <input type="text" id="dobBasic" class="form-control" placeholder="DD / MM / YY" />-->
-<!--                        </div>-->
-<!--                    </div>-->
                 </div>
-                <!-- TODO: add company from api -->
-                <div class="modal-body d-none">
-                    new company
+                <div class="modal-body register-company d-none">
+                    <div class="row">
+                        <!-- TODO: add company from api search -->
+                        <div class="col mb-3">
+                            <label for="companyName" class="form-label">회사명</label>
+                            <input type="text" id="companyName" name="companyName" class="form-control" placeholder="회사명" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <button id="registerCompanyBtn"></button>
+                    </div>
                 </div>
-                <div class="modal-body d-none">
-                    new member of registered company
+                <div class="modal-body register-user d-none">
+                    <div class="row g-2">
+                        <div class="col mb-0">
+                            <label for="name" class="form-label">Email</label>
+                            <input type="text" id="name" name="name" class="form-control" placeholder="xxxx@xxx.xx" />
+                        </div>
+                        <div class="col mb-0">
+                            <label for="dobBasic" class="form-label">DOB</label>
+                            <input type="text" id="dobBasic" class="form-control" placeholder="DD / MM / YY" />
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
@@ -140,8 +145,36 @@
     </div>
     </div>
     <script src="/modules/sneat/assets/vendor/js/bootstrap.js"></script>
-    <script type="text/javascript">
+    <script th:inline="javascript">
+        $(function () {
+            initModalSetting();
+        });
 
+        function initModalSetting() {
+            // Modal screen
+            $('#newCompanyBtn').click(function() {
+                $('#registerModal .register-company').removeClass('d-none');
+                $('#registerModal .ask-question').addClass('d-none');
+            });
+
+            $('#presentCompanyBtn').click(function() {
+                $('#registerModal .register-user').removeClass('d-none');
+                $('#registerModal .ask-question').addClass('d-none');
+            });
+
+            $('#registerModal').on('hidden.bs.modal', function(){
+                $('#registerModal .ask-question').removeClass('d-none');
+                $('#registerModal .register-company').addClass('d-none');
+                $('#registerModal .register-user').addClass('d-none');
+            });
+
+            // company register
+            // $('#registerCompanyBtn').click(function() {
+            //     $.ajax({
+            //         url: ''
+            //     })
+            // });
+        };
 
     </script>
 </body>
