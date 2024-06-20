@@ -18,5 +18,9 @@ public class Company {
     private Long id;
 
     private String name;
+    private String crno;
 
+    public Company(String name) {
+        this.name = name;
+    }
 }

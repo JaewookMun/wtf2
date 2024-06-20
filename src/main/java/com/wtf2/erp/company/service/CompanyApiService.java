@@ -3,7 +3,7 @@ package com.wtf2.erp.company.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.wtf2.erp.company.dto.api.ApiRequest;
 import com.wtf2.erp.company.dto.api.ApiResponse;
-import com.wtf2.erp.company.dto.api.response.CompanyDto;
+import com.wtf2.erp.company.dto.api.response.SearchResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +32,15 @@ public class CompanyApiService {
     @Value("${public.data.search-url}")
     private String searchUrl;
 
-    public List<CompanyDto> search(String name) throws JsonProcessingException, URISyntaxException {
+    /**
+     * 
+     * @param name
+     * @param pageNo 1부터 시작
+     * @return
+     * @throws JsonProcessingException
+     * @throws URISyntaxException
+     */
+    public SearchResult search(String name, int pageNo) throws JsonProcessingException, URISyntaxException {
         HttpHeaders headers = new HttpHeaders();
         List<MediaType> accept = new ArrayList<>();
         accept.addAll(headers.getAccept());
@@ -42,20 +50,19 @@ public class CompanyApiService {
 
         ApiRequest requestForm = ApiRequest.builder()
                 .serviceKey(authorizedKey)
-                .pageNo(String.valueOf(1))
+                .pageNo(String.valueOf(pageNo))
                 .numOfRows(String.valueOf(10))
                 .corpNm(name)
                 .resultType("json")
                 .build();
 
-        log.debug("[URL]: {}", searchUrl + requestForm.generateQueryString());
+        log.info("[URL]: {}", searchUrl + requestForm.generateQueryString());
         ResponseEntity<ApiResponse> response = restTemplate.getForEntity(new URI(searchUrl + requestForm.generateQueryString()), ApiResponse.class);
 
+        log.info(response);
         if(response.getStatusCode().is2xxSuccessful())
-            return response.getBody().getResponse().getBody().getItems().getCompanyList();
+            return response.getBody().getResponse().getSearchResult();
 
         throw new HttpServerErrorException(response.getStatusCode());
     }
-
-
 }

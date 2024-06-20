@@ -17,7 +17,7 @@ class CompanyApiServiceTest {
 
     @Test
     void test() throws URISyntaxException, JsonProcessingException {
-        companyApiService.search("삼성전자");
+        companyApiService.search("삼성전자", 1);
     }
 
 }

@@ -1,9 +1,11 @@
 package com.wtf2.erp.company.dto.api.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
 public class Response {
     private Header header;
-    private Body body;
+    @JsonProperty("body")
+    private SearchResult searchResult;
 }

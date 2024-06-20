@@ -2,6 +2,11 @@ package com.wtf2.erp.company.dto.api.response;
 
 import lombok.Data;
 
+/**
+ * 기업개요 조회 시 사용하는 검색어
+ * crno: 법인 등록번호
+ * corpNm: 법인 명칭
+ */
 @Data
 public class CompanyDto {
     private String crno;
