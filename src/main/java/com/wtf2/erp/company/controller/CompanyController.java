@@ -19,7 +19,7 @@ public class CompanyController {
     private final CompanyApiService companyApiService;
 
     @GetMapping("/search")
-    public SearchResult search(@RequestParam(name = "companyName", required = false) String companyName,
+    public SearchResult search(@RequestParam(name = "name", required = false) String companyName,
                                @RequestParam(name = "pageNo", defaultValue = "1", required = false) int pageNo)
             throws URISyntaxException, JsonProcessingException {
 

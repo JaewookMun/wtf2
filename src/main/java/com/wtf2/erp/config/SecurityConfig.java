@@ -24,6 +24,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
                         // permit resources
                         .requestMatchers("/modules/**", "/css/**", "/js/**").permitAll()
+                        .requestMatchers("/company/search", "/company/register").permitAll()
                         .requestMatchers("/join").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(login -> login

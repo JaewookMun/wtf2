@@ -56,10 +56,10 @@ public class CompanyApiService {
                 .resultType("json")
                 .build();
 
-        log.info("[URL]: {}", searchUrl + requestForm.generateQueryString());
+        log.debug("[URL]: {}", searchUrl + requestForm.generateQueryString());
         ResponseEntity<ApiResponse> response = restTemplate.getForEntity(new URI(searchUrl + requestForm.generateQueryString()), ApiResponse.class);
 
-        log.info(response);
+        log.debug(response);
         if(response.getStatusCode().is2xxSuccessful())
             return response.getBody().getResponse().getSearchResult();
 

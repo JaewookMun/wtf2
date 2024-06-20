@@ -37,7 +37,7 @@
                         <h4 class="mb-2">LOGIN</h4>
                         <p class="mb-4">Start with your account</p>
 
-                        <form id="" class="mb-3" method="post" action="/login">
+                        <form id="loginForm" class="mb-3" method="post" action="/login">
                             <div class="mb-3">
                                 <label for="username" class="form-label">Username</label>
                                 <input
@@ -88,12 +88,12 @@
         </div>
     </div>
 
-    <!-- Modal -->
+    <!-- register Modal -->
     <div class="modal fade" id="registerModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel1">계정 생성하기</h5>
+                    <h5 class="modal-title">계정 생성하기</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body ask-question">
@@ -115,6 +115,7 @@
                         <div class="col mb-3">
                             <label for="companyName" class="form-label">회사명</label>
                             <input type="text" id="companyName" name="companyName" class="form-control" placeholder="회사명" />
+                            <button data-bs-toggle="modal" data-bs-target="#searchModal">검색</button>
                         </div>
                     </div>
                     <div class="row">
@@ -142,8 +143,27 @@
             </div>
         </div>
     </div>
+
+    <!-- search Company Modal -->
+    <div class="modal fade" id="searchModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">기업 검색하기</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group">
+                        <input type="text" name="companyName" class="form-control" placeholder="예)회사명" />
+                        <span id="searchCompany" class="input-group-text cursor-pointer">
+                            <i class='bx bx-search'></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    </div>
+
     <script src="/modules/sneat/assets/vendor/js/bootstrap.js"></script>
     <script th:inline="javascript">
         $(function () {
@@ -174,7 +194,21 @@
             //         url: ''
             //     })
             // });
-        };
+
+            // searchModal
+            $('#searchCompany').click(function() {
+                let name = $('#searchModal input[name=companyName]').val();
+                console.log('name: ', name);
+
+                $.ajax({
+                    url: '/company/search?name=' + name,
+                    method: 'GET',
+                    success: function(res) {
+                        console.log(res);
+                    }
+                });
+            });
+        }
 
     </script>
 </body>
