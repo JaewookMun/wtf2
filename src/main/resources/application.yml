@@ -1,18 +1,29 @@
+server:
+  port: 8080
+
 spring:
   application:
     name: wtf2
 
   datasource:
-    url: jdbc:h2:tcp://localhost/D:/h2/wtf2
+    url: jdbc:h2:tcp://localhost/D:/h2/wtf2;MODE=MySQL
     username: sa
     password:
     driver-class-name: org.h2.Driver
   jpa:
     hibernate:
       ddl-auto: create
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
 
   config:
     import: application-api.yml
-
-server:
-  port: 8080
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql: debug

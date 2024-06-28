@@ -17,10 +17,13 @@
     <link rel="stylesheet" href="/css/custom.css">
 
     <script src="/modules/jquery-3.7.0/jquery-3.7.0.min.js"></script>
+    <script src="/modules/datatables/datatables.min.js"></script>
+
     <link rel="stylesheet" href="/modules/sneat/assets/vendor/fonts/boxicons.css">
     <link rel="stylesheet" href="/modules/sneat/assets/vendor/css/core.css" class="template-customizer-core-css">
     <link rel="stylesheet" href="/modules/sneat/assets/vendor/css/theme-default.css" class="template-customizer-theme-css">
     <link rel="stylesheet" href="/modules/sneat/assets/css/demo.css">
+    <link rel="stylesheet" href="/modules/datatables/datatables.min.css">
 
     <link rel="stylesheet" href="/modules/sneat/assets/vendor/css/pages/page-auth.css">
     <link rel="stylesheet" href="/modules/bootstrap-5.3.3-dist/css/bootstrap.min.css">
@@ -31,8 +34,6 @@
             <div class="authentication-inner">
                 <div class="card">
                     <div class="card-body">
-
-                        <!--  -->
 
                         <h4 class="mb-2">LOGIN</h4>
                         <p class="mb-4">Start with your account</p>
@@ -89,7 +90,7 @@
     </div>
 
     <!-- register Modal -->
-    <div class="modal fade" id="registerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -111,19 +112,20 @@
                 </div>
                 <div class="modal-body register-company d-none">
                     <div class="row">
-                        <!-- TODO: add company from api search -->
                         <div class="col mb-3">
                             <label for="companyName" class="form-label">회사명</label>
-                            <input type="text" id="companyName" name="companyName" class="form-control" placeholder="회사명" />
-                            <button data-bs-toggle="modal" data-bs-target="#searchModal">검색</button>
+                            <input type="text" id="companyName" name="companyName" class="form-control" autocomplete="off"
+                                   data-bs-toggle="modal" data-bs-target="#searchModal"
+                                   placeholder="회사명을 검색하세요." />
                         </div>
-                    </div>
-                    <div class="row">
-                        <button id="registerCompanyBtn"></button>
                     </div>
                 </div>
                 <div class="modal-body register-user d-none">
                     <div class="row g-2">
+                        <div class="col mb-0">
+                            <label for="name" class="form-label">등록된 법인명</label>
+                            <input type="text" id="registeredCompany" name="companyName" class="form-control" />
+                        </div>
                         <div class="col mb-0">
                             <label for="name" class="form-label">Email</label>
                             <input type="text" id="name" name="name" class="form-control" placeholder="xxxx@xxx.xx" />
@@ -135,10 +137,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                        Close
-                    </button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">취소</button>
+                    <button id="registerBtn" type="button" class="btn btn-primary">등록하기</button>
                 </div>
             </div>
         </div>
@@ -159,6 +159,50 @@
                             <i class='bx bx-search'></i>
                         </span>
                     </div>
+                    <div class="table-responsive text-nowrap my-4 py-3">
+                        <table id="companyListTable" class="table">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Company</th>
+                                    <th>대표</th>
+                                </tr>
+                            </thead>
+                            <tbody class="table-border-bottom-0"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- search registered Company Modal -->
+    <div class="modal fade" id="registeredCompanyModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">기존에 등록된 기업 찾기</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group">
+                        <input type="text" name="companyName" class="form-control" placeholder="예)회사명" />
+                        <span id="searchRegistered" class="input-group-text cursor-pointer">
+                            <i class='bx bx-search'></i>
+                        </span>
+                    </div>
+                    <div class="table-responsive text-nowrap my-4 py-3">
+                        <table id="registeredCompanyListTable" class="table">
+                            <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Company</th>
+                                <th>대표</th>
+                            </tr>
+                            </thead>
+                            <tbody class="table-border-bottom-0"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -166,6 +210,8 @@
 
     <script src="/modules/sneat/assets/vendor/js/bootstrap.js"></script>
     <script th:inline="javascript">
+    let companyListTable;
+
         $(function () {
             initModalSetting();
         });
@@ -188,26 +234,169 @@
                 $('#registerModal .register-user').addClass('d-none');
             });
 
-            // company register
-            // $('#registerCompanyBtn').click(function() {
-            //     $.ajax({
-            //         url: ''
-            //     })
-            // });
-
-            // searchModal
+            // TODO: searchModal - 조회 회사 정보 최신화, 조회시 검색조건 없애기
             $('#searchCompany').click(function() {
                 let name = $('#searchModal input[name=companyName]').val();
                 console.log('name: ', name);
 
+                companyListTable = $('#companyListTable').dataTable({
+                    serverSide: true,
+                    destroy: true,
+                    ajax: {
+                        url: '/companies/search?name=' + name,
+                        type: 'GET',
+                        dataSrc: function(res) {
+                            //console.log('response> ', res);
+
+                            return res.data;
+                        }
+                    },
+                    columnDefs: setCompanyListColumnDefs(),
+                });
+            });
+
+            $('#registerBtn').click(function() {
+                let url = '';
+                let params = {};
+
+                if($('#registerModal .modal-body:not(.d-none)').hasClass('register-company')) {
+                    url = '/companies/registration';
+                    params.companyName = $('#companyName').val();
+                    params.guid = $('#companyName').data('guid');
+
+                } else {
+                    url = '/users/registration';
+
+                }
+
                 $.ajax({
-                    url: '/company/search?name=' + name,
-                    method: 'GET',
+                    url: url,
+                    method: 'POST',
+                    data: params,
                     success: function(res) {
                         console.log(res);
+                        if (res.result == 'SUCCESS') {
+                            if (url.indexOf('companies') != -1) {
+                                $('#registerModal .register-user').removeClass('d-none');
+                                $('#registerModal .ask-question').addClass('d-none');
+                                $('#registeredCompany').data('id', res.data);
+                            }
+                        }
+                    },
+                    error: function(e) {
+                        console.log(e)
                     }
                 });
             });
+
+            $('#searchRegistered').click(function() {
+                let name = $('#registeredCompanyModal input[name=companyName]').val();
+                console.log('registered name: ', name);
+
+                registeredCompanyListTable = $('#companyListTable').dataTable({
+                    serverSide: true,
+                    destroy: true,
+                    ajax: {
+                        url: '/companies/search?name=' + name + '&isRegistered=true',
+                        type: 'GET',
+                        dataSrc: function(res) {
+                            //console.log('response> ', res);
+
+                            return res.data;
+                        }
+                    },
+                    columnDefs: setRegisteredCompanyListColumnDefs(),
+                });
+            });
+        }
+
+        function setCompanyListColumnDefs() {
+            let companyListColumnDefs = [
+                {
+                    targets: 0,
+                    className: '',
+                    width: '10px',
+                    orderable: false,
+                    render: function(data, type, row, meta) {
+                        console.log(row);
+
+                        return meta.row + 1;
+                    }
+                },
+                {
+                    targets: 1,
+                    className: 'a b',
+                    width: '20px',
+                    orderable: false,
+                    render: function(data, type, row) {
+
+                        return '<span role="button" onclick="chooseCompany(\'' + row.corpNm + '\', \'' + row.crno + '\')">' + row.corpNm + '</span>';
+                    }
+                },
+                {
+                    targets: 2,
+                    className: '',
+                    width: '10px',
+                    orderable: false,
+                    render: function(data, type, row) {
+
+                        return row.enpRprFnm;
+                    }
+                }
+            ];
+
+            return companyListColumnDefs;
+        }
+
+        function chooseCompany(chosenCompanyName, crno) {
+            $('#companyName').val(chosenCompanyName);
+            $('#companyName').data('guid', crno);
+            $('#searchModal').modal('hide');
+
+            $('#registerModal .register-company').removeClass('d-none');
+            $('#registerModal .ask-question').addClass('d-none');
+            $('#registerModal').modal('show');
+        }
+
+        function setRegisteredCompanyListColumnDefs() {
+            let companyListColumnDefs = [
+                {
+                    targets: 0,
+                    className: '',
+                    width: '10px',
+                    orderable: false,
+                    render: function(data, type, row, meta) {
+                        console.log(row);
+
+                        return meta.row + 1;
+                    }
+                },
+                {
+                    targets: 1,
+                    className: 'a b',
+                    width: '20px',
+                    orderable: false,
+                    render: function(data, type, row) {
+
+
+                        //return '<span role="button" onclick="chooseCompany(\'' + row.corpNm + '\', \'' + row.crno + '\')">' + row.corpNm + '</span>';
+                        return '2'
+                    }
+                },
+                {
+                    targets: 2,
+                    className: '',
+                    width: '10px',
+                    orderable: false,
+                    render: function(data, type, row) {
+
+                        // return row.enpRprFnm;
+                        return '3'
+                    }
+                }
+            ];
+
+            return companyListColumnDefs;
         }
 
     </script>

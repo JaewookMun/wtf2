@@ -7,17 +7,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.net.URISyntaxException;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
-class CompanyApiServiceTest {
+class CompanyServiceTest {
 
     @Autowired
-    CompanyApiService companyApiService;
+    CompanyService companyService;
 
     @Test
     void test() throws URISyntaxException, JsonProcessingException {
-        companyApiService.search("삼성전자", 1);
+        companyService.search(false,"삼성전자", 1, 10);
     }
 
 }

@@ -1,9 +1,6 @@
 package com.wtf2.erp.company.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,14 +10,16 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Company {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "company_id")
     private Long id;
 
     private String name;
-    private String crno;
+    @Column(unique = true)
+    private String guid;
 
-    public Company(String name) {
+    public Company(String name, String guid) {
         this.name = name;
+        this.guid = guid;
     }
 }

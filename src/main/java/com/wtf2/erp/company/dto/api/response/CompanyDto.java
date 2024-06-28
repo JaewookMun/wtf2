@@ -9,8 +9,10 @@ import lombok.Data;
  */
 @Data
 public class CompanyDto {
-    private String crno;
+    /** name */
     private String corpNm;
+    /** guid */
+    private String crno;
     private String corpEnsnNm;
     private String enpPbanCmpyNm;
     private String enpRprFnm;
@@ -46,4 +48,9 @@ public class CompanyDto {
     private String fssCorpChgDtm;
     private String fstOpegDt;
     private String lastOpegDt;
+
+    public CompanyDto(String corpNm, String crno) {
+        this.corpNm = corpNm;
+        this.crno = crno;
+    }
 }

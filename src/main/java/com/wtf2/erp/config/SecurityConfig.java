@@ -23,10 +23,13 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(request -> request
                         // permit resources
-                        .requestMatchers("/modules/**", "/css/**", "/js/**").permitAll()
-                        .requestMatchers("/company/search", "/company/register").permitAll()
-                        .requestMatchers("/join").permitAll()
-                        .anyRequest().authenticated())
+                        .requestMatchers(
+                                "/modules/**", "/css/**", "/js/**",
+                                "/companies/search", "/companies/registration",
+                                "/users/registration"
+                        ).permitAll()
+                        .anyRequest().authenticated()
+                )
                 .formLogin(login -> login
                         .loginPage("/login")
                         .permitAll()
