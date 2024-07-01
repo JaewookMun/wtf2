@@ -1,6 +1,7 @@
 package com.wtf2.erp.company.dto.api.response;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 기업개요 조회 시 사용하는 검색어
@@ -8,14 +9,17 @@ import lombok.Data;
  * corpNm: 법인 명칭
  */
 @Data
+@NoArgsConstructor
 public class CompanyDto {
+    private Long id;
     /** name */
     private String corpNm;
     /** guid */
     private String crno;
+    /** 대표 (CEO) */
+    private String enpRprFnm;
     private String corpEnsnNm;
     private String enpPbanCmpyNm;
-    private String enpRprFnm;
     private String corpRegMrktDcd;
     private String corpRegMrktDcdNm;
     private String corpDcd;
@@ -49,8 +53,10 @@ public class CompanyDto {
     private String fstOpegDt;
     private String lastOpegDt;
 
-    public CompanyDto(String corpNm, String crno) {
+    public CompanyDto(Long id, String corpNm, String crno, String enpRprFnm) {
+        this.id = id;
         this.corpNm = corpNm;
         this.crno = crno;
+        this.enpRprFnm = enpRprFnm;
     }
 }

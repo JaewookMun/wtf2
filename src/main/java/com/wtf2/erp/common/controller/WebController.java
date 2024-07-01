@@ -12,9 +12,15 @@ public class WebController {
         return "home";
     }
 
+    @GetMapping("/login")
+    public String login() {
+        return WebPage.LOGIN.getPath();
+    }
+
     @GetMapping("/organization")
     public String organization() {
 
         return WebPage.ORGANIZATION.getPath();
     }
+
 }

@@ -32,18 +32,18 @@ public class CompanyController {
 
     @PostMapping(value = "/registration")
     public JsonResponse<Long> registerCompany(@RequestParam(name = "companyName") String name,
-                                              @RequestParam(name = "guid") String guid) {
+                                              @RequestParam(name = "guid") String guid,
+                                              @RequestParam(name = "ceo") String ceo) {
         log.info("companyName: {}, guid: {}", name, guid);
 
         return JsonResponse
                 .succeed()
-                .buildWith(companyService.register(name, guid));
+                .buildWith(companyService.register(name, guid, ceo));
     }
 
     @GetMapping(value = "/{id}")
     public Company findOne(@PathVariable("id") Long id) {
         return companyService.findBy(id);
     }
-
 
 }

@@ -1,5 +1,6 @@
 package com.wtf2.erp.dept.domain;
 
+import com.wtf2.erp.company.domain.Company;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -7,7 +8,6 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -24,6 +24,10 @@ public class Dept {
     @JoinColumn(name = "parent_id")
     private Dept parent;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id")
+    private Company company;
+
     @OneToMany(mappedBy = "id")
     private List<Dept> children = new ArrayList<>();
 
@@ -37,7 +41,10 @@ public class Dept {
     }
 
     public void changeParent(Dept parent) {
-
         this.parent = parent;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
     }
 }

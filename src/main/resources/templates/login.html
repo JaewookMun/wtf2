@@ -37,6 +37,7 @@
 
                         <h4 class="mb-2">LOGIN</h4>
                         <p class="mb-4">Start with your account</p>
+                        <p id="welcomeMsg" class="d-none">success to join us! let's enter your account!</p>
 
                         <form id="loginForm" class="mb-3" method="post" action="/login">
                             <div class="mb-3">
@@ -44,7 +45,7 @@
                                 <input
                                         type="text"
                                         id="loginId"
-                                        name="loginId"
+                                        name="username"
                                         class="form-control"
                                         placeholder="Enter your email for login (xxxxx@xxx.xx)"
                                 />
@@ -124,7 +125,12 @@
                     <div class="row g-2">
                         <div class="col mb-0">
                             <label for="registeredCompany" class="form-label">등록된 법인명</label>
-                            <input type="text" id="registeredCompany" name="companyName" class="form-control" />
+                            <div class="input-group">
+                                <input type="text" id="registeredCompany" name="companyName" class="form-control" />
+                                <span class="input-group-text cursor-pointer" data-bs-toggle="modal" data-bs-target="#registeredCompanyModal">
+                                    <i class='bx bx-search'></i>
+                                </span>
+                            </div>
                         </div>
                     </div>
                     <div class="row g-2">
@@ -172,7 +178,7 @@
                     <div class="input-group">
                         <input type="text" name="companyName" class="form-control" placeholder="예)회사명" />
                         <span id="searchCompany" class="input-group-text cursor-pointer">
-                            <i class='bx bx-search'></i>
+                            <i class="bx bx-search"></i>
                         </span>
                     </div>
                     <div class="table-responsive text-nowrap my-4 py-3">
@@ -317,7 +323,11 @@
                             }
                             // 신규 사용자 등록
                             else {
+                                console.log('user resgistration')
+                                // TODO: initialize Modal
 
+                                $('#welcomeMsg').removeClass('d-none');
+                                $('#registerModal').modal('hide');
                             }
                         }
                     },
@@ -356,7 +366,6 @@
                     width: '10px',
                     orderable: false,
                     render: function(data, type, row, meta) {
-                        // console.log(row);
 
                         return meta.row + 1;
                     }
@@ -408,7 +417,6 @@
                     width: '10px',
                     orderable: false,
                     render: function(data, type, row, meta) {
-                        console.log(row);
 
                         return meta.row + 1;
                     }
@@ -419,10 +427,9 @@
                     width: '20px',
                     orderable: false,
                     render: function(data, type, row) {
+                        console.log(row);
 
-
-                        //return '<span role="button" onclick="chooseCompany(\'' + row.corpNm + '\', \'' + row.crno + '\')">' + row.corpNm + '</span>';
-                        return '2'
+                        return '<span role="button" onclick="chooseRegistered(\'' + row.corpNm + '\', \'' + row.id + '\')">' + row.corpNm + '</span>';
                     }
                 },
                 {
@@ -432,14 +439,23 @@
                     orderable: false,
                     render: function(data, type, row) {
 
-                        // return row.enpRprFnm;
-                        return '3'
+                        return row.enpRprFnm;
                     }
                 }
             ];
 
             return registeredListColumnDefs;
         }
+
+    function chooseRegistered(name, id) {
+        $('#registeredCompany').val(name);
+        $('#registeredCompany').data('id', id);
+        $('#registeredCompanyModal').modal('hide');
+
+        $('#registerModal .register-user').removeClass('d-none');
+        $('#registerModal .ask-question').addClass('d-none');
+        $('#registerModal').modal('show');
+    }
 
     </script>
 </body>

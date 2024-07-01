@@ -1,8 +1,8 @@
 package com.wtf2.erp.config;
 
-import com.wtf2.erp.user.domain.User;
 import com.wtf2.erp.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -10,24 +10,24 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        log.info(username);
 
-        Optional<User> user = userRepository.findByLoginId(username);
-
-        if(user.isPresent())
-            return new org.springframework.security.core.userdetails
-                    .User(user.get().getLoginId(), user.get().getPassword(), List.of(new SimpleGrantedAuthority("USER")));
-        else
-            throw new IllegalArgumentException("There is no user matches the loginId");
+        return userRepository.findByLoginId(username)
+                .map(user -> new org.springframework.security.core.userdetails.User(
+                        user.getLoginId(),
+                        user.getPassword(),
+                        List.of(new SimpleGrantedAuthority(user.getRole().getAuthority()))
+                ))
+                .orElseThrow(() -> new UsernameNotFoundException("There is no user matches the loginId"));
     }
 }
