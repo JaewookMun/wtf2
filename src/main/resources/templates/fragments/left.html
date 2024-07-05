@@ -5,6 +5,7 @@
             <a href="#" class="app-brand-link">
                 <span>WTF2</span>
             </a>
+            <span href="#" class="layout-menu-toggle d-xl-none"></span>
         </div>
         <div class="menu-inner-shadow"></div>
 
@@ -18,16 +19,48 @@
             </li>
 
             <li class="menu-item">
-                <a href="/boards" class="menu-link">
-                    <i class="menu-icon tf-icons bx bx-cube-alt"></i>
-                    <div data-i18n="Board">Board</div>
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <div data-i18n="Board">게시판</div>
                 </a>
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="/notice-board" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-cube-alt"></i>
+                            <div data-i18n="notice">공지사항</div>
+                        </a>
+                    </li>
+                </ul>
             </li>
             <li class="menu-item">
                 <a href="/organization" class="menu-link">
                     <i class="menu-icon tf-icons bx bxs-user"></i>
-                    <div data-i18n="User">User</div>
+                    <div data-i18n="User">조직도</div>
                 </a>
+            </li>
+
+            <li class="menu-item">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-layout"></i>
+                    <div data-i18n="Layouts">Layouts</div>
+                </a>
+
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="layouts-without-menu.html" class="menu-link">
+                            <div data-i18n="Without menu">Without menu</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="layouts-without-navbar.html" class="menu-link">
+                            <div data-i18n="Without navbar">Without navbar</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="layouts-container.html" class="menu-link">
+                            <div data-i18n="Container">Container</div>
+                        </a>
+                    </li>
+                </ul>
             </li>
         </ul>
 

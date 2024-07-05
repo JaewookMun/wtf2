@@ -7,6 +7,10 @@ public enum WebPage {
      */
     LOGIN("login"),
     /**
+     * boardIndex/noticeMain
+     */
+    NOTICE_BOARD("boardIndex/noticeMain"),
+    /**
      * organization/orgMain
      */
     ORGANIZATION("organization/orgMain");
