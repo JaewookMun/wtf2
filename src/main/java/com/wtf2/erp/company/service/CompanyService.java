@@ -1,6 +1,7 @@
 package com.wtf2.erp.company.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.wtf2.erp.common.dto.DataTableRequest;
 import com.wtf2.erp.common.dto.DataTableResponse;
 import com.wtf2.erp.company.domain.Company;
 import com.wtf2.erp.company.dto.api.ApiRequest;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 
 @Log4j2
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class CompanyService {
 
@@ -39,12 +42,12 @@ public class CompanyService {
     /**
      * 
      * @param name
-     * @param pageNo 1부터 시작
+     * @param tableRequest - (draw) 1부터 시작
      * @return
      * @throws JsonProcessingException
      * @throws URISyntaxException
      */
-    public DataTableResponse<CompanyDto> search(Boolean isRegistered, String name, int pageNo, int size) throws JsonProcessingException, URISyntaxException {
+    public DataTableResponse<CompanyDto> search(Boolean isRegistered, String name, DataTableRequest tableRequest) throws JsonProcessingException, URISyntaxException {
 
         if (isRegistered) {
             // TODO: 현재는 SELECT로 전체를 가져온 후 stream에서 limit() 을 통해 자르지만 쿼리에서 하도록 수정
@@ -55,8 +58,8 @@ public class CompanyService {
             int totalCnt = list.size();
 
             return DataTableResponse.<CompanyDto>builder()
-                    .data(list.stream().limit(size).collect(Collectors.toList()))
-                    .draw(pageNo)
+                    .data(list.stream().limit(tableRequest.getLength()).collect(Collectors.toList()))
+                    .draw(tableRequest.getDraw())
                     .recordsTotal(totalCnt)
                     .recordsFiltered(totalCnt)
                     .build();
@@ -64,8 +67,8 @@ public class CompanyService {
 
         ApiRequest requestForm = ApiRequest.builder()
                 .serviceKey(authorizedKey)
-                .pageNo(String.valueOf(pageNo))
-                .numOfRows(String.valueOf(size))
+                .pageNo(String.valueOf(tableRequest.getDraw()))
+                .numOfRows(String.valueOf(tableRequest.getLength()))
                 .corpNm(name)
                 .resultType("json")
                 .build();
@@ -80,6 +83,7 @@ public class CompanyService {
         throw new HttpServerErrorException(response.getStatusCode());
     }
 
+    @Transactional
     public Long register(String name, String guid, String ceo) {
         companyRepository.findByGuid(guid).ifPresent(c -> {
             throw new DataIntegrityViolationException("GUID is duplicate - guid is Unique key constraint");

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{/fragments/layout.html}">
+<section layout:fragment="content">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">공지사항</span></h4>
+
+    <div class="row">
+        <table id="noticeTable">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>제목</th>
+                    <th>작성자</th>
+                    <th>작성일</th>
+                    <th>조회수</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script type="text/javascript">
+        let noticeTable;
+
+        $(function () {
+            noticeTableInit();
+
+        });
+
+        async function noticeTableInit() {
+            // totalCount
+            let totalCnt = await getTotalNoticeCount();
+            console.log('totalCnt: ', totalCnt)
+
+            noticeTable = $('#noticeTable').dataTable({
+                serverSide: true,
+                destroy: true,
+                ajax: {
+                    url: '/boards/list?type=NOTICE',
+                    type: 'GET',
+                    dataSrc: function (res) {
+                        res.recordsTotal = res.recordsFiltered = totalCnt;
+                        console.log(res);
+                        return res.data;
+                    }
+                },
+                columnDefs: setNoticeTableColumnDefs()
+            });
+        }
+
+        function getTotalNoticeCount() {
+            return new Promise(function (resolve, reject) {
+                $.ajax({
+                    url: 'boards/total-count/notice',
+                    method: 'GET',
+                    success: function (res) {
+                        resolve(res.data);
+                    }
+                })
+            })
+        }
+
+        function setNoticeTableColumnDefs() {
+            const noticeTableColumnDefs = [
+                {
+                    targets: 0,
+                    width: '10px',
+                    render: function(data, type, row, meta) {
+                        console.log('row> ', row);
+
+                        return meta.row + 1;
+                    }
+                },
+                {
+                    targets: 1,
+                    width: '200px',
+                    render: function(data, type, row, meta) {
+
+                        return '제목';
+                    }
+                },
+                {
+                    targets: 2,
+                    width: '50px',
+                    render: function(data, type, row, meta) {
+
+                        return '글쓴이';
+                    }
+                },
+                {
+                    targets: 3,
+                    width: '100px',
+                    render: function(data, type, row, meta) {
+
+                        return '작성일자';
+                    }
+                },
+                {
+                    targets: 4,
+                    width: '50px',
+                    render: function(data, type, row, meta) {
+
+                        return '조회수';
+                    }
+                }
+            ]
+
+            return noticeTableColumnDefs;
+        }
+
+    </script>
+</section>
+</html>

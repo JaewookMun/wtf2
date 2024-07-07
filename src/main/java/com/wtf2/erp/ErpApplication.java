@@ -15,11 +15,9 @@ public class ErpApplication {
 	@Autowired
 	private CompanyService companyService;
 
-
 	public static void main(String[] args) {
 		SpringApplication.run(ErpApplication.class, args);
 	}
-
 
 	@PostConstruct
 	private void init() {

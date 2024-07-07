@@ -2,6 +2,8 @@ package com.wtf2.erp.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter;
@@ -11,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Configuration
+@EnableJpaAuditing
 public class ApplicationConfig {
 
     @Bean
@@ -23,5 +26,10 @@ public class ApplicationConfig {
         converters.add(xmlHttpMessageConverter);
 
         return restTemplate;
+    }
+
+    @Bean
+    public AuditorAware<String> auditorProvider() {
+        return new SecurityAuditorAware();
     }
 }

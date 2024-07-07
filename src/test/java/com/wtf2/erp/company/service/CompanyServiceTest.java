@@ -1,6 +1,7 @@
 package com.wtf2.erp.company.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.wtf2.erp.common.dto.DataTableRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,7 +16,11 @@ class CompanyServiceTest {
 
     @Test
     void test() throws URISyntaxException, JsonProcessingException {
-        companyService.search(false,"삼성전자", 1, 10);
+
+        companyService.search(false
+                ,"삼성전자"
+                , DataTableRequest.builder()
+                        .draw(1).length(10).build());
     }
 
 }

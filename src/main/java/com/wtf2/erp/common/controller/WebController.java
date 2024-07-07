@@ -17,6 +17,11 @@ public class WebController {
         return WebPage.LOGIN.getPath();
     }
 
+    @GetMapping("/notice-board")
+    public String boardPage() {
+        return WebPage.NOTICE_BOARD.getPath();
+    }
+
     @GetMapping("/organization")
     public String organization() {
 

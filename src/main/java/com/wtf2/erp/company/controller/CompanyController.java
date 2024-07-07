@@ -1,11 +1,13 @@
 package com.wtf2.erp.company.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.wtf2.erp.common.dto.DataTableRequest;
 import com.wtf2.erp.common.dto.DataTableResponse;
 import com.wtf2.erp.common.dto.JsonResponse;
 import com.wtf2.erp.company.domain.Company;
 import com.wtf2.erp.company.dto.api.response.CompanyDto;
 import com.wtf2.erp.company.service.CompanyService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -23,11 +25,11 @@ public class CompanyController {
     @GetMapping("/search")
     public DataTableResponse<CompanyDto> search(@RequestParam(name = "name", required = false) String companyName,
                                                 @RequestParam(name = "isRegistered", required = false, defaultValue = "false") Boolean isRegistered,
-                                                @RequestParam(name = "draw", defaultValue = "1", required = false) int pageNo,
-                                                @RequestParam(name = "length", defaultValue = "10", required = false) int size)
+                                                @ModelAttribute @Valid DataTableRequest dataTableRequest)
             throws URISyntaxException, JsonProcessingException {
 
-        return companyService.search(isRegistered, companyName, pageNo, size);
+//        return companyService.search(isRegistered, companyName, pageNo, size);
+        return companyService.search(isRegistered, companyName, dataTableRequest);
     }
 
     @PostMapping(value = "/registration")
