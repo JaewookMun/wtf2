@@ -22,6 +22,7 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public Long register(Long companyId, String userName, String email, String password) {
         Company company = companyRepository.findById(companyId).orElseThrow();
         password = passwordEncoder.encode(password);
