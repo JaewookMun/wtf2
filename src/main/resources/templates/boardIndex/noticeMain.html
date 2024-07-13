@@ -5,7 +5,7 @@
     <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">공지사항</span></h4>
 
     <div class="row">
-        <table id="noticeTable">
+        <table id="noticeTable" class="table">
             <thead>
                 <tr>
                     <th>No</th>
@@ -19,7 +19,7 @@
         </table>
     </div>
 
-    <script type="text/javascript">
+    <script th:inline="javascript">
         let noticeTable;
 
         $(function () {
@@ -32,7 +32,7 @@
             let totalCnt = await getTotalNoticeCount();
             console.log('totalCnt: ', totalCnt)
 
-            noticeTable = $('#noticeTable').dataTable({
+            noticeTable = $('#noticeTable').DataTable({
                 serverSide: true,
                 destroy: true,
                 ajax: {
@@ -40,16 +40,18 @@
                     type: 'GET',
                     dataSrc: function (res) {
                         res.recordsTotal = res.recordsFiltered = totalCnt;
-                        console.log(res);
+                        console.log('datasrc: ', res.data);
+
                         return res.data;
+                        // return res;
                     }
                 },
-                columnDefs: setNoticeTableColumnDefs()
+                columnDefs: setNoticeTableColumnDefs(),
             });
         }
 
         function getTotalNoticeCount() {
-            return new Promise(function (resolve, reject) {
+            return new Promise(function (resolve) {
                 $.ajax({
                     url: 'boards/total-count/notice',
                     method: 'GET',
@@ -61,7 +63,7 @@
         }
 
         function setNoticeTableColumnDefs() {
-            const noticeTableColumnDefs = [
+            let noticeTableColumnDefs = [
                 {
                     targets: 0,
                     width: '10px',
@@ -76,7 +78,7 @@
                     width: '200px',
                     render: function(data, type, row, meta) {
 
-                        return '제목';
+                        return row.title;
                     }
                 },
                 {
@@ -84,7 +86,7 @@
                     width: '50px',
                     render: function(data, type, row, meta) {
 
-                        return '글쓴이';
+                        return row.createdBy;
                     }
                 },
                 {
@@ -92,7 +94,7 @@
                     width: '100px',
                     render: function(data, type, row, meta) {
 
-                        return '작성일자';
+                        return row.createdDate;
                     }
                 },
                 {
@@ -100,7 +102,7 @@
                     width: '50px',
                     render: function(data, type, row, meta) {
 
-                        return '조회수';
+                        return row.viewCount;
                     }
                 }
             ]

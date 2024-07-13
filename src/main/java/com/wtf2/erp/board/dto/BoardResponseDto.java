@@ -15,6 +15,7 @@ public class BoardResponseDto {
     private LocalDateTime createdDate;
     private String createdBy;
     private LocalDateTime lastModifiedDate;
+    private int viewCount;
 
     public BoardResponseDto(Board board) {
         convertFrom(board);
@@ -26,6 +27,7 @@ public class BoardResponseDto {
         this.createdDate = board.getCreatedDate();
         this.createdBy = board.getCreatedBy();
         this.lastModifiedDate = board.getLastModifiedDate();
+        this.viewCount = board.getViewCount();
 
         return this;
     }

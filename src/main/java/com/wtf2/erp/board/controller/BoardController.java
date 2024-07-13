@@ -31,6 +31,7 @@ public class BoardController {
         BoardType boardType = BoardType.valueOf(type);
 
         return DataTableResponse.<BoardResponseDto>builder()
+                .draw(dataTableRequest.getDraw())
                 .data(boardService.list(boardType, dataTableRequest))
                 .build();
     }
