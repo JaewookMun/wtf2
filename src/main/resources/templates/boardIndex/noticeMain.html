@@ -23,9 +23,23 @@
         let noticeTable;
 
         $(function () {
+            initDataTableFeature();
             noticeTableInit();
 
         });
+
+        function initDataTableFeature() {
+            DataTable.feature.register('createBtn', function (settings, opts) {
+                let registerBtn = document.createElement('button');
+                registerBtn.innerText = '등록'
+                registerBtn.classList.add('btn', 'btn-primary');
+
+                let createDiv = document.createElement('div');
+                createDiv.appendChild(registerBtn);
+
+                return createDiv;
+            });
+        }
 
         async function noticeTableInit() {
             // totalCount
@@ -35,6 +49,24 @@
             noticeTable = $('#noticeTable').DataTable({
                 serverSide: true,
                 destroy: true,
+                // buttons: ['create'],
+                layout: {
+                    topStart: 'info',
+                    topEnd: function () {
+                        let search =
+                            '<div class="search-box d-flex">' +
+                                '<div class="col-9 pe-1">' +
+                                    '<input id="tableSearch" class="form-control" placeholder="search">' +
+                                '</div>' +
+                                '<button class="btn btn-primary">검색</button>' +
+                            '</div>'
+
+                        return search;
+                    },
+                    // bottom: 'paging',
+                    bottom: ['createBtn', 'paging', ''],
+                    bottomEnd: null
+                },
                 ajax: {
                     url: '/boards/list?type=NOTICE',
                     type: 'GET',
@@ -43,7 +75,6 @@
                         console.log('datasrc: ', res.data);
 
                         return res.data;
-                        // return res;
                     }
                 },
                 columnDefs: setNoticeTableColumnDefs(),
