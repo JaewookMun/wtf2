@@ -22,6 +22,9 @@ public class WebController {
         return WebPage.NOTICE_BOARD.getPath();
     }
 
+    @GetMapping("/notice-board/register")
+    public String registerPage() { return WebPage.NOTICE_REGISTER.getPath();}
+
     @GetMapping("/organization")
     public String organization() {
 
