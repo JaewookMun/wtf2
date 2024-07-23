@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{/fragments/layout.html}">
+<section layout:fragment="content">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">공지사항</span></h4>
+
+    <div class="row cpe-15">
+        <div class="py-1">
+            <input id="noticeTitle" class="form-control" type="text" placeholder="제목을 입력하세요">
+        </div>
+        <div class="mt-3 mb-2">
+            <textarea id="noticeText" name="noticeText" class="form-control" style="height: 400px; resize: none;"></textarea>
+        </div>
+<!--    button block    -->
+        <div class="text-end">
+<!--            <button id="completeRegisterBtn" class="btn btn-primary">완료</button>-->
+        </div>
+    </div>
+
+    <input type="hidden" id="boardId" th:value="${boardId}">
+    <script th:inline="javascript">
+        let boardId = $('#boardId').val();
+        console.log(boardId);
+
+        $(function () {
+            initBoardDetails(boardId);
+        });
+
+        function initBoardDetails(id) {
+            $.ajax({
+                url: '/boards/' + boardId,
+                method: 'GET',
+                success: function(res) {
+                    if (res.result == 'SUCCESS') {
+                        $('#noticeTitle').val(res.data.title);
+                        $('#noticeTitle').prop('readonly', true);
+                        $('#noticeText').val(res.data.content);
+                        $('#noticeText').prop('readonly', true);
+
+                    }
+                }
+            });
+        }
+
+    </script>
+</section>
+</html>

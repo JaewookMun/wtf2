@@ -4,7 +4,7 @@ import com.wtf2.erp.board.domain.Board;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Data
 @NoArgsConstructor
@@ -12,9 +12,9 @@ public class BoardResponseDto {
 
     private Long id;
     private String title;
-    private LocalDateTime createdDate;
+    private String createdDate;
     private String createdBy;
-    private LocalDateTime lastModifiedDate;
+    private String lastModifiedDate;
     private int viewCount;
 
     public BoardResponseDto(Board board) {
@@ -24,9 +24,9 @@ public class BoardResponseDto {
     public BoardResponseDto convertFrom(Board board) {
         this.id = board.getId();
         this.title = board.getTitle();
-        this.createdDate = board.getCreatedDate();
+        this.createdDate = board.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         this.createdBy = board.getCreatedBy();
-        this.lastModifiedDate = board.getLastModifiedDate();
+        this.lastModifiedDate = board.getLastModifiedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         this.viewCount = board.getViewCount();
 
         return this;

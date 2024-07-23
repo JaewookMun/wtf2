@@ -1,6 +1,7 @@
 package com.wtf2.erp.board.controller;
 
 import com.wtf2.erp.board.domain.BoardType;
+import com.wtf2.erp.board.dto.BoardDetailsResponseDto;
 import com.wtf2.erp.board.dto.BoardRequestDto;
 import com.wtf2.erp.board.dto.BoardResponseDto;
 import com.wtf2.erp.board.service.BoardService;
@@ -37,9 +38,18 @@ public class BoardController {
     }
 
     @PostMapping("/post")
-    public JsonResponse<Long> post(@ModelAttribute BoardRequestDto requestDto) {
+    public JsonResponse<Long> post(@RequestBody BoardRequestDto requestDto) {
+        System.out.println("requestDto = " + requestDto);
 
         return JsonResponse.succeed()
                 .buildWith(boardService.post(requestDto));
     }
+
+    @GetMapping("/{id}")
+    public JsonResponse<BoardDetailsResponseDto> findOneBy(@PathVariable(name = "id") Long id) {
+
+        return JsonResponse.succeed()
+                .buildWith(boardService.findBy(id));
+    }
+
 }
