@@ -2,6 +2,7 @@ package com.wtf2.erp.board.service;
 
 import com.wtf2.erp.board.domain.Board;
 import com.wtf2.erp.board.domain.BoardType;
+import com.wtf2.erp.board.dto.BoardDetailsResponseDto;
 import com.wtf2.erp.board.dto.BoardRequestDto;
 import com.wtf2.erp.board.dto.BoardResponseDto;
 import com.wtf2.erp.board.repository.BoardRepository;
@@ -21,6 +22,11 @@ import java.util.stream.Collectors;
 public class BoardService {
 
     private final BoardRepository boardRepository;
+
+    public List<BoardResponseDto> list(BoardType boardType) {
+
+        return null;
+    }
 
     public List<BoardResponseDto> list(BoardType boardType, DataTableRequest dataTableRequest) {
 
@@ -50,4 +56,12 @@ public class BoardService {
 
         return boardRepository.countByType(boardType);
     }
+
+    public BoardDetailsResponseDto findBy(Long id) {
+        Board board = boardRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException());
+
+        return new BoardDetailsResponseDto(board.getTitle(), board.getContent().getText());
+    }
+
 }

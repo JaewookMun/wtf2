@@ -28,7 +28,7 @@ public class Board extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private BoardType type;
 
-    @OneToOne(mappedBy = "board", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Content content;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -44,10 +44,18 @@ public class Board extends BaseEntity {
         this.type = type;
     }
 
+    public void setParent(Board parent) {
+        this.parent = parent;
+    }
+
     public void addContents(String text) {
         Content content = new Content(text);
         this.content = content;
         content.setBoard(this);
     }
 
+    public void addChild(Board child) {
+        children.add(child);
+        child.setParent(this);
+    }
 }

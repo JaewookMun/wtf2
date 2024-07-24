@@ -2,3 +2,16 @@
     width: 140px !important;
     height: 140px !important;
 }
+
+.content-wrapper .pagination {
+    justify-content: center;
+}
+
+.cpx-6 {
+    padding-left: 6rem !important;
+    padding-right: 6rem !important;
+}
+
+.cpe-15 {
+    padding-right: 15rem !important;
+}
