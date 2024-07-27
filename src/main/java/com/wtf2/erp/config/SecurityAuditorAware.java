@@ -6,6 +6,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Optional;
 
+/**
+ * Spring Data JPA에서 Entity의 감사필드 (작성자) 정보를 넣을 때 사용.
+ */
 public class SecurityAuditorAware implements AuditorAware<String> {
 
     @Override

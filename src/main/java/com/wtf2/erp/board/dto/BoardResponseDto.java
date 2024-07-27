@@ -5,6 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -17,6 +20,8 @@ public class BoardResponseDto {
     private String lastModifiedDate;
     private int viewCount;
 
+    private List<BoardResponseDto> children = new ArrayList<>();
+
     public BoardResponseDto(Board board) {
         convertFrom(board);
     }
@@ -28,6 +33,14 @@ public class BoardResponseDto {
         this.createdBy = board.getCreatedBy();
         this.lastModifiedDate = board.getLastModifiedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         this.viewCount = board.getViewCount();
+
+        if (!board.getChildren().isEmpty())
+            this.children.addAll(
+                    board.getChildren()
+                            .stream()
+                            .map(BoardResponseDto::new)
+                            .collect(Collectors.toList())
+            );
 
         return this;
     }

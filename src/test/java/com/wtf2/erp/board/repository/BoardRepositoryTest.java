@@ -8,16 +8,17 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
 
 @SpringBootTest
+@Transactional
 class BoardRepositoryTest {
     @Autowired
     BoardRepository boardRepository;
     @Autowired
     BoardService boardService;
-
 
 
     @Test
@@ -39,7 +40,8 @@ class BoardRepositoryTest {
     @Test
     @DisplayName("@EntityGraph with @Query")
     void test1() {
-        boardRepository.findByType(BoardType.PAGE);
+        List<Board> boardList = boardRepository.findRootByType(BoardType.PAGE);
+        System.out.println("boardList.size() = " + boardList.size());
     }
 
 

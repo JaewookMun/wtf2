@@ -1,4 +1,4 @@
-package com.wtf2.erp.config;
+package com.wtf2.erp.config.security;
 
 import com.wtf2.erp.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

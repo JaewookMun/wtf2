@@ -34,7 +34,7 @@ public class ErpApplication {
 		Long companyId = companyService.register("WTF2", LocalDateTime.now().toString(), "Jaewook");
 		userService.register(companyId, "tester", "test", "123");
 		Board notice = new Board("공지사항1", BoardType.NOTICE);
-		notice.addContents("안녕하세요!. \n반갑습니다.");
+		notice.addContent("안녕하세요!. \n반갑습니다.");
 		boardRepository.save(notice);
 
 		boardRepository.save(new Board("MEMO", BoardType.PAGE));
