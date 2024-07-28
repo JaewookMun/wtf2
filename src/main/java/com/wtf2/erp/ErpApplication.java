@@ -5,6 +5,7 @@ import com.wtf2.erp.board.domain.BoardType;
 import com.wtf2.erp.board.dto.BoardRequestDto;
 import com.wtf2.erp.board.repository.BoardRepository;
 import com.wtf2.erp.board.service.BoardService;
+import com.wtf2.erp.company.domain.Company;
 import com.wtf2.erp.company.service.CompanyService;
 import com.wtf2.erp.user.service.UserService;
 import jakarta.annotation.PostConstruct;
@@ -33,17 +34,28 @@ public class ErpApplication {
 	private void init() {
 		Long companyId = companyService.register("WTF2", LocalDateTime.now().toString(), "Jaewook");
 		userService.register(companyId, "tester", "test", "123");
-		Board notice = new Board("공지사항1", BoardType.NOTICE);
+
+		Company company = companyService.findBy(companyId);
+		Board notice = new Board("공지사항1", BoardType.NOTICE, company);
 		notice.addContent("안녕하세요!. \n반갑습니다.");
 		boardRepository.save(notice);
 
-		boardRepository.save(new Board("MEMO", BoardType.PAGE));
+		Board memo = new Board("MEMO", BoardType.PAGE, company);
+		memo.addContent("");
+		boardRepository.save(memo);
 
-		Board parent = new Board("워크스페이스", BoardType.PAGE);
+		Board parent = new Board("워크스페이스", BoardType.PAGE, company);
+		Board a = new Board("A", BoardType.PAGE, company);
+		Board b = new Board("B", BoardType.PAGE, company);
+		Board c = new Board("C", BoardType.PAGE, company);
+		parent.addContent("");
+		a.addContent("");
+		b.addContent("");
+		c.addContent("");
 
-		parent.addChild(new Board("A", BoardType.PAGE));
-		parent.addChild(new Board("B", BoardType.PAGE));
-		parent.addChild(new Board("C", BoardType.PAGE));
+		parent.addChild(a);
+		parent.addChild(b);
+		parent.addChild(c);
 		boardRepository.save(parent);
 	}
 }
