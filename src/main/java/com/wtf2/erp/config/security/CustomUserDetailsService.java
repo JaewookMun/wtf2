@@ -23,11 +23,12 @@ public class CustomUserDetailsService implements UserDetailsService {
         log.info(username);
 
         return userRepository.findByLoginId(username)
-                .map(user -> new org.springframework.security.core.userdetails.User(
-                        user.getLoginId(),
-                        user.getPassword(),
-                        List.of(new SimpleGrantedAuthority(user.getRole().getAuthority()))
-                ))
+                .map(user -> AppUserDetails.builder()
+                        .username(user.getLoginId())
+                        .password(user.getPassword())
+                        .company(user.getCompany())
+                        .authorities(List.of(new SimpleGrantedAuthority(user.getRole().getAuthority())))
+                        .build())
                 .orElseThrow(() -> new UsernameNotFoundException("There is no user matches the loginId"));
     }
 }
