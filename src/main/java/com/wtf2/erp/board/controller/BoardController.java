@@ -46,10 +46,10 @@ public class BoardController {
     }
 
     @GetMapping("/{id}")
-    public JsonResponse<BoardDetailsResponseDto> findOneBy(@PathVariable(name = "id") Long id) {
+    public JsonResponse<BoardDetailsResponseDto> details(@PathVariable(name = "id") Long id) {
 
         return JsonResponse.succeed()
-                .buildWith(boardService.findBy(id));
+                .buildWith(boardService.getBoardDetails(id));
     }
 
 }

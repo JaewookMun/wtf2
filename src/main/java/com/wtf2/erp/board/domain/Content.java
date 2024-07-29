@@ -14,8 +14,7 @@ public class Content {
     @Column(name = "content_id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_id")
+    @OneToOne(mappedBy = "content", fetch = FetchType.LAZY)
     private Board board;
 
     @Column(columnDefinition = "TEXT")

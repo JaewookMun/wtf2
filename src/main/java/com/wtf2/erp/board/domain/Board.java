@@ -22,6 +22,10 @@ public class Board extends BaseEntity {
 
     private String title;
 
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "content_id")
+    private Content content;
+
     private int viewCount;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -42,16 +46,17 @@ public class Board extends BaseEntity {
      * Constructor
      */
     @Builder
-    public Board(String title, BoardType type) {
+    public Board(String title, BoardType type, Company company) {
         this.title = title;
         this.type = type;
+        this.company = company;
     }
 
     /*
      * method
      */
     public void addContent(String text) {
-        Content content = new Content(text);
+        this.content = new Content(text);
         content.setBoard(this);
     }
 

@@ -1,44 +1,110 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    <aside th:fragment="f-left" id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
-        <div class="app-brand demo">
-            <a href="#" class="app-brand-link">
-                <span>WTF2</span>
-            </a>
-            <span href="#" class="layout-menu-toggle d-xl-none"></span>
-        </div>
-        <div class="menu-inner-shadow"></div>
+<aside th:fragment="f-left" id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+    <div class="app-brand demo">
+        <a href="/" class="app-brand-link">
+            <span>WTF2</span>
+        </a>
+        <span href="#" class="layout-menu-toggle d-xl-none"></span>
+    </div>
+    <div class="menu-inner-shadow"></div>
 
-        <ul class="menu-inner py-1">
-            <!-- Dashboard -->
+    <ul class="menu-inner py-1">
+        <!-- Dashboard -->
 <!--            <li class="menu-item active">-->
-            <li class="menu-item">
-                <a href="/" class="menu-link">
-                    <i class="menu-icon tf-icons bx bx-home-circle"></i>
-                    <div data-i18n="Analytics">Dashboard</div>
-                </a>
-            </li>
+        <li class="menu-item">
+            <a href="/" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                <div data-i18n="Analytics">Dashboard</div>
+            </a>
+        </li>
+        <li class="menu-item">
+            <a href="/notice-board" class="menu-link">
+                <i class="menu-icon bx bxs-dashboard"></i>
+                <div data-i18n="Analytics">공지사항</div>
+            </a>
+        </li>
 
-            <li class="menu-item">
-                <a href="javascript:void(0);" class="menu-link menu-toggle">
-                    <i class="menu-icon tf-icons bx bx-cube-alt"></i>
-                    <div data-i18n="Board">게시판</div>
-                </a>
-                <ul class="menu-sub">
-                    <li class="menu-item">
-                        <a href="/notice-board" class="menu-link">
-                            <div data-i18n="notice">공지사항</div>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li class="menu-item">
-                <a href="/organization" class="menu-link">
-                    <i class="menu-icon tf-icons bx bxs-user"></i>
-                    <div data-i18n="User">조직도</div>
-                </a>
-            </li>
-        </ul>
+        <!-- custom -->
+        <div id="menuHeader" class="menu-header small text-uppercase not-draggable">
+            <span role="button" class="menu-header-text">Pages</span>
+            <div class="item-group d-none" th:unless="${#lists.isEmpty(pages)}">
+                <div th:each="page : ${pages}" class="menu-item">
+                    <a th:href="@{/notice-board/details/{id}(id=${page.id})}" href="/" class="menu-link">
+                        <div class=""><i class="menu-icon tf-icons bx bx-cube-alt"></i></div>
+                        <div th:text="${page.title}">ROOT</div>
+                    </a>
+                    <div class="item-group d-none"></div>
+                </div>
+            </div>
+        </div>
 
-    </aside>
+
+        <!--     origin       -->
+        <li class="menu-item">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-cube-alt"></i>
+                <div data-i18n="Board">게시판</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item">
+                    <a href="/" class="menu-link">
+                        <div data-i18n="notice">item</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="menu-item">
+            <a href="/organization" class="menu-link">
+                <i class="menu-icon tf-icons bx bxs-user"></i>
+                <div data-i18n="User">조직도</div>
+            </a>
+        </li>
+    </ul>
+
+    <script th:inline="javascript">
+        $(function() {
+            console.log('left layout init');
+
+            initWorkSpaceTree();
+        });
+
+        function initWorkSpaceTree() {
+            // menu layout
+            $('#menuHeader .menu-header-text').click(function() {
+                $(this).siblings('.item-group').toggleClass('d-none');
+            });
+
+            // $('#menuHeader').find('a.menu-link').click(e => changeDefaultListener(e, this));
+            $('#menuHeader').find('a.menu-link').click(e => changeDefaultListener(e, e.currentTarget));
+        }
+
+        function createSubpage(id, title) {
+            let page = $('<div>', {
+                class: 'menu-item',
+                id: 'page-' + id,
+            });
+
+            let innerHtml =
+                '<a href="/notice-board/details/'+ id + '" class="menu-link">' +
+                    '<div><i class="menu-icon tf-icons bx bx-cube-alt"></i></div>' +
+                    '<div>' + title + '</div>' +
+                '</a>' +
+                '<div class="item-group d-none"></div>';
+
+            $(page).html(innerHtml);
+            $(page).find('a.menu-link').click(e => changeDefaultListener(e, this));
+        }
+
+        function changeDefaultListener(e, aTag) {
+            e.preventDefault();
+            let isEmpty = $('#pageContext').empty();
+            console.log('isEmpty> ', isEmpty);
+
+            console.log('href> ', $(aTag).prop('href'));
+            $('#pageContext').load($(aTag).prop('href'));
+        }
+
+    </script>
+</aside>
 </html>

@@ -22,8 +22,12 @@ public class BoardResponseDto {
 
     private List<BoardResponseDto> children = new ArrayList<>();
 
-    public BoardResponseDto(Board board) {
+    public BoardResponseDto(Board board, List<Board> children) {
         convertFrom(board);
+
+        if (!children.isEmpty()) {
+            convertChildren(board.getChildren());
+        }
     }
 
     public BoardResponseDto convertFrom(Board board) {
@@ -34,14 +38,19 @@ public class BoardResponseDto {
         this.lastModifiedDate = board.getLastModifiedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         this.viewCount = board.getViewCount();
 
-        if (!board.getChildren().isEmpty())
-            this.children.addAll(
-                    board.getChildren()
-                            .stream()
-                            .map(BoardResponseDto::new)
-                            .collect(Collectors.toList())
-            );
-
         return this;
     }
+
+    /**
+     * 검색 대상의 한 단계 하위 까지만 탐색하기 위해
+     * children의 타입을 변경할 때는 children에 null을 넣는다.
+     * @param boardList
+     */
+    public void convertChildren(List<Board> boardList) {
+        this.children = boardList.stream()
+                .map(child -> new BoardResponseDto(child, new ArrayList<>()))
+                .collect(Collectors.toList());
+    }
+
+
 }
