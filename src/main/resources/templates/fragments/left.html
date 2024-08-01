@@ -27,12 +27,18 @@
 
         <!-- custom -->
         <div id="menuHeader" class="menu-header small text-uppercase not-draggable">
-            <span role="button" class="menu-header-text">Pages</span>
+            <div role="standard" class="d-flex justify-content-between">
+                <span role="button" class="menu-header-text">Pages</span>
+                <div><i role="button" class='bx bx-plus' onclick="addSubPageBlock()"></i></div>
+            </div>
             <div class="item-group d-none" th:unless="${#lists.isEmpty(pages)}">
                 <div th:each="page : ${pages}" class="menu-item">
-                    <a th:href="@{/notice-board/details/{id}(id=${page.id})}" href="/" class="menu-link">
+                    <a role="page" th:href="@{/notice-board/details/{id}(id=${page.id})}" href="/" class="menu-link justify-content-between p-0 pt-1">
                         <div class=""><i class="menu-icon tf-icons bx bx-cube-alt"></i></div>
                         <div th:text="${page.title}">ROOT</div>
+                        <div class="ms-auto">
+                            <i role="button" th:id="${'btn' + page.id}" class="bx bx-plus" th:onclick="'addSubPageBlock(' + ${page.id} + ', event)'"></i>
+                        </div>
                     </a>
                     <div class="item-group d-none"></div>
                 </div>
@@ -72,37 +78,66 @@
         function initWorkSpaceTree() {
             // menu layout
             $('#menuHeader .menu-header-text').click(function() {
-                $(this).siblings('.item-group').toggleClass('d-none');
+                $(this).parent('div[role="standard"]').siblings('.item-group').toggleClass('d-none');
             });
 
-            // $('#menuHeader').find('a.menu-link').click(e => changeDefaultListener(e, this));
             $('#menuHeader').find('a.menu-link').click(e => changeDefaultListener(e, e.currentTarget));
         }
 
-        function createSubpage(id, title) {
-            let page = $('<div>', {
-                class: 'menu-item',
-                id: 'page-' + id,
-            });
+        function addSubPageBlock(id, e) {
+            // e.preventDefault();
+            // e.stopPropagation();
 
-            let innerHtml =
-                '<a href="/notice-board/details/'+ id + '" class="menu-link">' +
-                    '<div><i class="menu-icon tf-icons bx bx-cube-alt"></i></div>' +
-                    '<div>' + title + '</div>' +
-                '</a>' +
-                '<div class="item-group d-none"></div>';
+            let subItemGroup = $('#btn' + id).closest('a[role="page"]').next('.item-group');
+            if(subItemGroup.hasClass('d-none')) subItemGroup.removeClass('d-none');
 
-            $(page).html(innerHtml);
-            $(page).find('a.menu-link').click(e => changeDefaultListener(e, this));
+            let subPageId = postSubPage(id);
+
+            console.log('sub ', subPageId);
+
+            let pageBlock =
+                '<div class="menu-item">' +
+                    '<a role="page" href="/notice-board/details/' + subPageId + '" class="menu-link justify-content-between p-0 pt-1">' +
+                        '<div><i class="menu-icon tf-icon bx bx-cube-alt"></i></div>' +
+                        '<div>제목없음</div>' +
+                        '<div class="ms-auto">' +
+                            '<i role="button" id="btn' + subPageId + '" class="bx bx-plus" onclick="addSubPageBlock(' + subPageId + ', event)"></i>' +
+                        '</div>' +
+                    '</a>' +
+                    '<div class="item-group d-none"></div>' +
+                '</div>';
+
+            subItemGroup.append(pageBlock);
+            subItemGroup.find('a.menu-link').click(e => changeDefaultListener(e, e.currentTarget));
         }
 
         function changeDefaultListener(e, aTag) {
             e.preventDefault();
-            let isEmpty = $('#pageContext').empty();
-            console.log('isEmpty> ', isEmpty);
+
+            // let isEmpty = $('#pageContext').empty();
+            // console.log('isEmpty> ', isEmpty);
 
             console.log('href> ', $(aTag).prop('href'));
             $('#pageContext').load($(aTag).prop('href'));
+
+            // // URL 변경 (페이지 새로고침 없이)
+            // history.pushState(null, '', $(aTag).prop('href'));
+        }
+
+        function postSubPage(parentId) {
+            let subPageId = -1;
+
+            $.ajax({
+                url: '/boards/page',
+                method: 'POST',
+                data: {'parentId': parentId},
+                async: false,
+                success: function(res) {
+                    subPageId = res.data;
+                }
+            });
+
+            return subPageId;
         }
 
     </script>

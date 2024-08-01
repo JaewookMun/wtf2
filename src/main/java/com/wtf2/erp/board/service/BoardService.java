@@ -29,6 +29,8 @@ public class BoardService {
     private final BoardQuerydslRepository boardQuerydslRepository;
     private final CompanyRepository companyRepository;
 
+    private static final String NON_TITLE = "제목없음";
+
     public List<BoardResponseDto> getPageList(BoardType boardType, Long parentId) {
 
         return boardQuerydslRepository.findPagesByParent(boardType, parentId, getCurrentAuthenticatedUser().getCompany())
@@ -62,13 +64,6 @@ public class BoardService {
         return boardRepository.save(board).getId();
     }
 
-    private AppUserDetails getCurrentAuthenticatedUser() {
-        Object currentUser = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if(currentUser instanceof AppUserDetails) return (AppUserDetails) currentUser;
-
-        throw new IllegalStateException("Not Authenticated");
-    }
-
     public Long totalCount(BoardType boardType) {
 
         return boardRepository.countByType(boardType);
@@ -81,4 +76,24 @@ public class BoardService {
         return new BoardDetailsResponseDto(board.getTitle(), board.getContent().getText());
     }
 
+    @Transactional
+    public Long postPageFrom(Long parentId) {
+        Board parent = boardRepository.findById(parentId).orElseThrow(() -> new IllegalArgumentException());
+
+        Board subBoard = new Board(NON_TITLE, BoardType.PAGE, getCurrentAuthenticatedUser().getCompany());
+        subBoard.addContent("");
+
+        parent.addChild(subBoard);
+        // flush()를 사용하지 않으면 null 반환
+        boardRepository.flush();
+
+        return subBoard.getId();
+    }
+
+    private AppUserDetails getCurrentAuthenticatedUser() {
+        Object currentUser = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(currentUser instanceof AppUserDetails) return (AppUserDetails) currentUser;
+
+        throw new IllegalStateException("Not Authenticated");
+    }
 }

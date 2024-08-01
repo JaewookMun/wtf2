@@ -10,8 +10,10 @@ import com.wtf2.erp.common.dto.DataTableResponse;
 import com.wtf2.erp.common.dto.JsonResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/boards")
 @RequiredArgsConstructor
@@ -37,7 +39,7 @@ public class BoardController {
                 .build();
     }
 
-    @PostMapping("/post")
+    @PostMapping
     public JsonResponse<Long> post(@RequestBody BoardRequestDto requestDto) {
         System.out.println("requestDto = " + requestDto);
 
@@ -46,10 +48,18 @@ public class BoardController {
     }
 
     @GetMapping("/{id}")
-    public JsonResponse<BoardDetailsResponseDto> details(@PathVariable(name = "id") Long id) {
+    public JsonResponse<BoardDetailsResponseDto> detailsOf(@PathVariable(name = "id") Long id) {
 
         return JsonResponse.succeed()
                 .buildWith(boardService.getBoardDetails(id));
+    }
+
+    @PostMapping("/page")
+    public JsonResponse<Long> postPage(@RequestParam Long parentId) {
+        log.info("parentId: {}", parentId);
+
+        return JsonResponse.succeed()
+                .buildWith(boardService.postPageFrom(parentId));
     }
 
 }

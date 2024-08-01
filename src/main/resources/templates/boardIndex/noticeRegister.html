@@ -22,7 +22,7 @@
         $(function () {
             $('#completeRegisterBtn').click(function() {
                 $.ajax({
-                    url: '/boards/post',
+                    url: '/boards',
                     method: 'post',
                     data: JSON.stringify(setRequestData()),
                     contentType: 'application/json',
