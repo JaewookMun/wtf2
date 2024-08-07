@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/boards")
@@ -60,6 +62,12 @@ public class BoardController {
 
         return JsonResponse.succeed()
                 .buildWith(boardService.postPageFrom(parentId));
+    }
+
+    @GetMapping("/page/{parentId}/sub-items")
+    public JsonResponse<List<BoardResponseDto>> subItems(@PathVariable(name = "parentId") Long id) {
+
+        return JsonResponse.succeed().buildWith(boardService.getPageList(BoardType.PAGE, id));
     }
 
 }

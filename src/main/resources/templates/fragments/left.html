@@ -26,17 +26,19 @@
         </li>
 
         <!-- custom -->
-        <div id="menuHeader" class="menu-header small text-uppercase not-draggable">
+        <div id="menuHeader" class="menu-header small text-uppercase not-draggable pe-3">
             <div role="standard" class="d-flex justify-content-between">
                 <span role="button" class="menu-header-text">Pages</span>
                 <div><i role="button" class='bx bx-plus' onclick="addSubPageBlock()"></i></div>
             </div>
             <div class="item-group d-none" th:unless="${#lists.isEmpty(pages)}">
                 <div th:each="page : ${pages}" class="menu-item">
-                    <a role="page" th:href="@{/notice-board/details/{id}(id=${page.id})}" href="/" class="menu-link justify-content-between p-0 pt-1">
-                        <div class=""><i class="menu-icon tf-icons bx bx-cube-alt"></i></div>
+                    <a role="page" th:href="@{/notice-board/details/{id}(id=${page.id})}" href="/" class="menu-link justify-content-between p-0 pt-1"
+                       onmouseover="itemMouseOver(this)" onmouseout="itemMouseOut(this)">
+                        <div class="i-container"><i class="menu-icon tf-icons bx bx-cube-alt" th:onclick="'dropDownToggle(this, ' + ${page.id} + ')'"></i></div>
                         <div th:text="${page.title}">ROOT</div>
                         <div class="ms-auto">
+                            <i role="button" class="bx bx-trash-alt"></i>
                             <i role="button" th:id="${'btn' + page.id}" class="bx bx-plus" th:onclick="'addSubPageBlock(' + ${page.id} + ', event)'"></i>
                         </div>
                     </a>
@@ -97,10 +99,14 @@
 
             let pageBlock =
                 '<div class="menu-item">' +
-                    '<a role="page" href="/notice-board/details/' + subPageId + '" class="menu-link justify-content-between p-0 pt-1">' +
-                        '<div><i class="menu-icon tf-icon bx bx-cube-alt"></i></div>' +
+                    '<a role="page" href="/notice-board/details/' + subPageId + '" class="menu-link justify-content-between p-0 pt-1"' +
+                    'onmouseover="itemMouseOver(this)" onmouseout="itemMouseOut(this)">' +
+                        '<div class="i-container">' +
+                            '<i class="menu-icon tf-icon bx bx-cube-alt" onclick="dropDownToggle(this, ' + subPageId + ')"></i>' +
+                        '</div>' +
                         '<div>제목없음</div>' +
                         '<div class="ms-auto">' +
+                            '<i role="button" class="bx bx-trash-alt"></i>' +
                             '<i role="button" id="btn' + subPageId + '" class="bx bx-plus" onclick="addSubPageBlock(' + subPageId + ', event)"></i>' +
                         '</div>' +
                     '</a>' +
@@ -138,6 +144,84 @@
             });
 
             return subPageId;
+        }
+
+        function itemMouseOver(gElement) {
+            let iTag = $(gElement).find('.i-container i').first();
+            iTag.removeClass('bx-cube-alt');
+            if (iTag.hasClass('active')) iTag.addClass('bxs-chevron-down');
+            else iTag.addClass('bx-chevron-right');
+        }
+
+        function itemMouseOut(gElement) {
+            let iTag = $(gElement).find('.i-container i').first();
+            iTag.removeClass('bx-chevron-right bxs-chevron-down');
+            iTag.addClass('bx-cube-alt');
+        }
+
+        function dropDownToggle(iElement, id) {
+            $(iElement).toggleClass('active bx-chevron-right bxs-chevron-down');
+
+            // dropdown - 열기
+            if ($(iElement).hasClass('bxs-chevron-down')) {
+                let subItems = getSubItems(id);
+
+                // TODO : length가 0일 때 공간 띄우기
+                if (subItems.length == 0) console.log('length is 0');
+
+                let pageBlocks = '';
+                subItems.forEach(e => {
+                    pageBlocks += getPageBlock(e);
+                })
+
+                let itemGroup = $(iElement).closest('a[role="page"]').next('.item-group');
+                itemGroup.removeClass('d-none');
+                itemGroup.append(pageBlocks);
+                itemGroup.find('a.menu-link').click(e => changeDefaultListener(e, e.currentTarget));
+
+            }
+            // dropdown - 닫기
+            else {
+                $(iElement).closest('a[role="page"]').next('.item-group').addClass('d-none');
+                $(iElement).closest('a[role="page"]').next('.item-group').empty();
+            }
+        }
+
+        function getPageBlock(page) {
+
+            let pageBlock =
+
+                '<div class="menu-item">' +
+                    '<a role="page" href="/notice-board/details/' + page.id + '" class="menu-link justify-content-between p-0 pt-1"' +
+                        'onmouseover="itemMouseOver(this)" onmouseout="itemMouseOut(this)">' +
+                            '<div class="i-container">' +
+                                '<i class="menu-icon tf-icon bx bx-cube-alt" onclick="dropDownToggle(this, ' + page.id + ')"></i>' +
+                            '</div>' +
+                            '<div>' + page.title + '</div>' +
+                            '<div class="ms-auto">' +
+                                '<i role="button" class="bx bx-trash-alt"></i>' +
+                                '<i role="button" id="btn' + page.id + '" class="bx bx-plus" onclick="addSubPageBlock(' + page.id + ', event)"></i>' +
+                            '</div>' +
+                        '</a>' +
+                    '<div class="item-group d-none"></div>' +
+                '</div>';
+
+            return pageBlock;
+        }
+
+        function getSubItems(id) {
+            let subItems;
+
+            $.ajax({
+                url: '/boards/page/' + id + '/sub-items',
+                method: 'GET',
+                async: false,
+                success: function (res) {
+                    subItems = res.data;
+                }
+            })
+
+            return subItems;
         }
 
     </script>
