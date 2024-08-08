@@ -28,12 +28,12 @@ public class WebController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication instanceof AnonymousAuthenticationToken) return null;
 
-        return boardService.getPageList(BoardType.PAGE, null);
+        return boardService.getSubPageList(BoardType.PAGE, null);
     }
 
     @GetMapping("/")
     public String home(Model model) {
-        model.addAttribute("pages", boardService.getPageList(BoardType.PAGE, null));
+        model.addAttribute("pages", boardService.getSubPageList(BoardType.PAGE, null));
 
         return "home";
     }

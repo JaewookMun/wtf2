@@ -24,7 +24,7 @@ class BoardQuerydslRepositoryTest {
     void test() {
         Company company = companyRepository.findAll().stream().findAny().get();
 
-        List<Board> rootList = querydslRepository.findPagesByParent(BoardType.PAGE, 3L, company);
+        List<Board> rootList = querydslRepository.findSubPages(BoardType.PAGE, 3L, company);
         System.out.println("size: " + rootList.size());
         for (Board board : rootList) {
             System.out.println("board = " + board.getTitle());

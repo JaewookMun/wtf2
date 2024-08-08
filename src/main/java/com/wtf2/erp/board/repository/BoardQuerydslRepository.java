@@ -19,7 +19,7 @@ public class BoardQuerydslRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public List<Board> findPagesByParent(BoardType type, Long parentId, Company company) {
+    public List<Board> findSubPages(BoardType type, Long parentId, Company company) {
         return queryFactory
                 .selectFrom(board)
                 .leftJoin(board.children).fetchJoin()

@@ -57,17 +57,24 @@ public class BoardController {
     }
 
     @PostMapping("/page")
-    public JsonResponse<Long> postPage(@RequestParam Long parentId) {
+    public JsonResponse<Long> postSubPage(@RequestParam Long parentId) {
         log.info("parentId: {}", parentId);
 
         return JsonResponse.succeed()
-                .buildWith(boardService.postPageFrom(parentId));
+                .buildWith(boardService.postSubPageFor(parentId));
     }
 
     @GetMapping("/page/{parentId}/sub-items")
     public JsonResponse<List<BoardResponseDto>> subItems(@PathVariable(name = "parentId") Long id) {
 
-        return JsonResponse.succeed().buildWith(boardService.getPageList(BoardType.PAGE, id));
+        return JsonResponse.succeed().buildWith(boardService.getSubPageList(BoardType.PAGE, id));
     }
 
+    @DeleteMapping("/page/{id}")
+    public JsonResponse<String> deletePage(@PathVariable(name = "id") Long id) {
+
+        boardService.deletePage(id);
+
+        return JsonResponse.succeed().build();
+    }
 }

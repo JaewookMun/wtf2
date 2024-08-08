@@ -47,5 +47,13 @@ public class JsonResponse<T> {
         public <T> JsonResponse<T> buildWith(@Nullable T data) {
             return new JsonResponse<>(result, message, data);
         }
+
+        /**
+         *
+         * @return "OK"
+         */
+        public JsonResponse<String> build() {
+            return new JsonResponse<>(result, message, "OK");
+        }
     }
 }

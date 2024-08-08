@@ -31,9 +31,15 @@ public class BoardService {
 
     private static final String NON_TITLE = "제목없음";
 
-    public List<BoardResponseDto> getPageList(BoardType boardType, Long parentId) {
+    /**
+     * 하위 페이지 리스트 조회
+     * @param boardType Page
+     * @param parentId
+     * @return
+     */
+    public List<BoardResponseDto> getSubPageList(BoardType boardType, Long parentId) {
 
-        return boardQuerydslRepository.findPagesByParent(boardType, parentId, getCurrentAuthenticatedUser().getCompany())
+        return boardQuerydslRepository.findSubPages(boardType, parentId, getCurrentAuthenticatedUser().getCompany())
                 .stream()
                 .map(board -> new BoardResponseDto(board, board.getChildren()))
                 .collect(Collectors.toList());
@@ -65,7 +71,6 @@ public class BoardService {
     }
 
     public Long totalCount(BoardType boardType) {
-
         return boardRepository.countByType(boardType);
     }
 
@@ -76,8 +81,13 @@ public class BoardService {
         return new BoardDetailsResponseDto(board.getTitle(), board.getContent().getText());
     }
 
+    /**
+     * post a blank page for parent page
+     * @param parentId
+     * @return
+     */
     @Transactional
-    public Long postPageFrom(Long parentId) {
+    public Long postSubPageFor(Long parentId) {
         Board parent = boardRepository.findById(parentId).orElseThrow(() -> new IllegalArgumentException());
 
         Board subBoard = new Board(NON_TITLE, BoardType.PAGE, getCurrentAuthenticatedUser().getCompany());
@@ -95,5 +105,19 @@ public class BoardService {
         if(currentUser instanceof AppUserDetails) return (AppUserDetails) currentUser;
 
         throw new IllegalStateException("Not Authenticated");
+    }
+
+    @Transactional
+    public void deletePage(Long id) {
+        Board deleteTarget = boardRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("EMPTY"));
+
+        if (!deleteTarget.getCompany().equals(getCurrentAuthenticatedUser().getCompany()))
+            throw new IllegalStateException("DO NOT HAVE AUTH");
+
+        if (!deleteTarget.getType().equals(BoardType.PAGE))
+            throw new IllegalArgumentException("NOT SAME TYPE");
+
+        boardRepository.delete(deleteTarget);
     }
 }

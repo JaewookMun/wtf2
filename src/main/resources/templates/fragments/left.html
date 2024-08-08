@@ -32,13 +32,13 @@
                 <div><i role="button" class='bx bx-plus' onclick="addSubPageBlock()"></i></div>
             </div>
             <div class="item-group d-none" th:unless="${#lists.isEmpty(pages)}">
-                <div th:each="page : ${pages}" class="menu-item">
+                <div th:each="page : ${pages}" th:id="'pageItem' + ${page.id}" class="menu-item">
                     <a role="page" th:href="@{/notice-board/details/{id}(id=${page.id})}" href="/" class="menu-link justify-content-between p-0 pt-1"
                        onmouseover="itemMouseOver(this)" onmouseout="itemMouseOut(this)">
                         <div class="i-container"><i class="menu-icon tf-icons bx bx-cube-alt" th:onclick="'dropDownToggle(this, ' + ${page.id} + ')'"></i></div>
                         <div th:text="${page.title}">ROOT</div>
                         <div class="ms-auto">
-                            <i role="button" class="bx bx-trash-alt"></i>
+                            <i role="button" class="bx bx-trash-alt" th:onclick="'deletePage(' + ${page.id} + ')'"></i>
                             <i role="button" th:id="${'btn' + page.id}" class="bx bx-plus" th:onclick="'addSubPageBlock(' + ${page.id} + ', event)'"></i>
                         </div>
                     </a>
@@ -46,7 +46,6 @@
                 </div>
             </div>
         </div>
-
 
         <!--     origin       -->
         <li class="menu-item">
@@ -93,20 +92,20 @@
             let subItemGroup = $('#btn' + id).closest('a[role="page"]').next('.item-group');
             if(subItemGroup.hasClass('d-none')) subItemGroup.removeClass('d-none');
 
-            let subPageId = postSubPage(id);
+            let subPageId = postBlankSubPage(id);
 
             console.log('sub ', subPageId);
 
             let pageBlock =
-                '<div class="menu-item">' +
+                '<div id="pageItem' + subPageId + '" class="menu-item">' +
                     '<a role="page" href="/notice-board/details/' + subPageId + '" class="menu-link justify-content-between p-0 pt-1"' +
-                    'onmouseover="itemMouseOver(this)" onmouseout="itemMouseOut(this)">' +
+                        'onmouseover="itemMouseOver(this)" onmouseout="itemMouseOut(this)">' +
                         '<div class="i-container">' +
                             '<i class="menu-icon tf-icon bx bx-cube-alt" onclick="dropDownToggle(this, ' + subPageId + ')"></i>' +
                         '</div>' +
                         '<div>제목없음</div>' +
                         '<div class="ms-auto">' +
-                            '<i role="button" class="bx bx-trash-alt"></i>' +
+                            '<i role="button" class="bx bx-trash-alt" onclick="deletePage(' + subPageId + ')"></i>' +
                             '<i role="button" id="btn' + subPageId + '" class="bx bx-plus" onclick="addSubPageBlock(' + subPageId + ', event)"></i>' +
                         '</div>' +
                     '</a>' +
@@ -130,7 +129,7 @@
             // history.pushState(null, '', $(aTag).prop('href'));
         }
 
-        function postSubPage(parentId) {
+        function postBlankSubPage(parentId) {
             let subPageId = -1;
 
             $.ajax({
@@ -222,6 +221,17 @@
             })
 
             return subItems;
+        }
+
+        function deletePage(id) {
+
+            $.ajax({
+                url: '/boards/page/' + id,
+                method: 'DELETE',
+
+            })
+
+
         }
 
     </script>
