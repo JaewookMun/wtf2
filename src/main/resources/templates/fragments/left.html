@@ -31,7 +31,7 @@
                 <span role="button" class="menu-header-text">Pages</span>
                 <div><i role="button" class='bx bx-plus' onclick="addSubPageBlock()"></i></div>
             </div>
-            <div class="item-group d-none" th:unless="${#lists.isEmpty(pages)}">
+            <div id="itemGroupContainer" class="item-group d-none" th:unless="${#lists.isEmpty(pages)}">
                 <div th:each="page : ${pages}" th:id="'pageItem' + ${page.id}" class="menu-item">
                     <a role="page" th:href="@{/notice-board/details/{id}(id=${page.id})}" href="/" class="menu-link justify-content-between p-0 pt-1"
                        onmouseover="itemMouseOver(this)" onmouseout="itemMouseOut(this)">
@@ -39,7 +39,7 @@
                         <div th:text="${page.title}">ROOT</div>
                         <div class="ms-auto">
                             <i role="button" class="bx bx-trash-alt" th:onclick="'deletePage(' + ${page.id} + ')'"></i>
-                            <i role="button" th:id="${'btn' + page.id}" class="bx bx-plus" th:onclick="'addSubPageBlock(' + ${page.id} + ', event)'"></i>
+                            <i role="button" th:id="${'btn' + page.id}" class="bx bx-plus" th:onclick="'addSubPageBlock(' + ${page.id} + ')'"></i>
                         </div>
                     </a>
                     <div class="item-group d-none"></div>
@@ -85,28 +85,28 @@
             $('#menuHeader').find('a.menu-link').click(e => changeDefaultListener(e, e.currentTarget));
         }
 
-        function addSubPageBlock(id, e) {
-            // e.preventDefault();
-            // e.stopPropagation();
+        function addSubPageBlock(id) {
+            let subItemGroup;
+            // define subItemGroup
+            if (id === undefined) subItemGroup = $('#itemGroupContainer');
+            else subItemGroup = $('#btn' + id).closest('a[role="page"]').next('.item-group');
 
-            let subItemGroup = $('#btn' + id).closest('a[role="page"]').next('.item-group');
+            // show subItemGroup
             if(subItemGroup.hasClass('d-none')) subItemGroup.removeClass('d-none');
 
-            let subPageId = postBlankSubPage(id);
-
-            console.log('sub ', subPageId);
-
+            let blankPageId = postBlankSubPage(id);
             let pageBlock =
-                '<div id="pageItem' + subPageId + '" class="menu-item">' +
-                    '<a role="page" href="/notice-board/details/' + subPageId + '" class="menu-link justify-content-between p-0 pt-1"' +
+
+                '<div id="pageItem' + blankPageId + '" class="menu-item">' +
+                    '<a role="page" href="/notice-board/details/' + blankPageId + '" class="menu-link justify-content-between p-0 pt-1"' +
                         'onmouseover="itemMouseOver(this)" onmouseout="itemMouseOut(this)">' +
                         '<div class="i-container">' +
-                            '<i class="menu-icon tf-icon bx bx-cube-alt" onclick="dropDownToggle(this, ' + subPageId + ')"></i>' +
+                            '<i class="menu-icon tf-icon bx bx-cube-alt" onclick="dropDownToggle(this, ' + blankPageId + ')"></i>' +
                         '</div>' +
                         '<div>제목없음</div>' +
                         '<div class="ms-auto">' +
-                            '<i role="button" class="bx bx-trash-alt" onclick="deletePage(' + subPageId + ')"></i>' +
-                            '<i role="button" id="btn' + subPageId + '" class="bx bx-plus" onclick="addSubPageBlock(' + subPageId + ', event)"></i>' +
+                            '<i role="button" class="bx bx-trash-alt" onclick="deletePage(' + blankPageId + ')"></i>' +
+                            '<i role="button" id="btn' + blankPageId + '" class="bx bx-plus" onclick="addSubPageBlock(' + blankPageId + ')"></i>' +
                         '</div>' +
                     '</a>' +
                     '<div class="item-group d-none"></div>' +
@@ -130,7 +130,7 @@
         }
 
         function postBlankSubPage(parentId) {
-            let subPageId = -1;
+            let blankPageId = -1;
 
             $.ajax({
                 url: '/boards/page',
@@ -138,11 +138,11 @@
                 data: {'parentId': parentId},
                 async: false,
                 success: function(res) {
-                    subPageId = res.data;
+                    blankPageId = res.data;
                 }
             });
 
-            return subPageId;
+            return blankPageId;
         }
 
         function itemMouseOver(gElement) {
@@ -199,7 +199,7 @@
                             '<div>' + page.title + '</div>' +
                             '<div class="ms-auto">' +
                                 '<i role="button" class="bx bx-trash-alt"></i>' +
-                                '<i role="button" id="btn' + page.id + '" class="bx bx-plus" onclick="addSubPageBlock(' + page.id + ', event)"></i>' +
+                                '<i role="button" id="btn' + page.id + '" class="bx bx-plus" onclick="addSubPageBlock(' + page.id + ')"></i>' +
                             '</div>' +
                         '</a>' +
                     '<div class="item-group d-none"></div>' +
@@ -228,10 +228,12 @@
             $.ajax({
                 url: '/boards/page/' + id,
                 method: 'DELETE',
-
+                success: function (res) {
+                    if (res.data == 'OK') {
+                        $('#pageItem' + id).remove();
+                    }
+                }
             })
-
-
         }
 
     </script>

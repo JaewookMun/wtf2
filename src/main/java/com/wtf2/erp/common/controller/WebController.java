@@ -23,13 +23,13 @@ public class WebController {
 
     private final BoardService boardService;
 
-    @ModelAttribute(name = "pages")
-    public List<BoardResponseDto> pageMenuSetup(@RequestParam(required = false) Long parentId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication instanceof AnonymousAuthenticationToken) return null;
-
-        return boardService.getSubPageList(BoardType.PAGE, null);
-    }
+//    @ModelAttribute(name = "pages")
+//    public List<BoardResponseDto> pageMenuSetup(@RequestParam(required = false) Long parentId) {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if(authentication instanceof AnonymousAuthenticationToken) return null;
+//
+//        return boardService.getSubPageList(BoardType.PAGE, null);
+//    }
 
     @GetMapping("/")
     public String home(Model model) {

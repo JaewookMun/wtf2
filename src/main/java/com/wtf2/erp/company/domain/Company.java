@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -36,5 +37,18 @@ public class Company {
     public void addDept(Dept dept) {
         this.dept.add(dept);
         dept.setCompany(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Company company = (Company) o;
+        return getId().equals(company.getId()) && Objects.equals(getName(), company.getName()) && getGuid().equals(company.getGuid());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getName(), getGuid());
     }
 }

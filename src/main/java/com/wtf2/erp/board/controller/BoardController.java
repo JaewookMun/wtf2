@@ -57,7 +57,7 @@ public class BoardController {
     }
 
     @PostMapping("/page")
-    public JsonResponse<Long> postSubPage(@RequestParam Long parentId) {
+    public JsonResponse<Long> postSubPage(@RequestParam(required = false) Long parentId) {
         log.info("parentId: {}", parentId);
 
         return JsonResponse.succeed()

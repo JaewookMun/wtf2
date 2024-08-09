@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -88,16 +89,24 @@ public class BoardService {
      */
     @Transactional
     public Long postSubPageFor(Long parentId) {
-        Board parent = boardRepository.findById(parentId).orElseThrow(() -> new IllegalArgumentException());
 
-        Board subBoard = new Board(NON_TITLE, BoardType.PAGE, getCurrentAuthenticatedUser().getCompany());
-        subBoard.addContent("");
+        Optional<Board> parent =
+                Optional.ofNullable(parentId)
+                        .map(
+                                id -> boardRepository.findById(id)
+                                        .orElseThrow(() -> new IllegalArgumentException("NOT EXIST"))
+                        );
 
-        parent.addChild(subBoard);
+        Board blankBoard = new Board(NON_TITLE, BoardType.PAGE, getCurrentAuthenticatedUser().getCompany());
+        blankBoard.addContent("");
+        boardRepository.save(blankBoard);
+
+        parent.ifPresent(p -> p.addChild(blankBoard));
+
         // flush()를 사용하지 않으면 null 반환
-        boardRepository.flush();
+//        boardRepository.flush();
 
-        return subBoard.getId();
+        return blankBoard.getId();
     }
 
     private AppUserDetails getCurrentAuthenticatedUser() {
