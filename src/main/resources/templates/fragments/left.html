@@ -1,6 +1,26 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <aside th:fragment="f-left" id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+    <style>
+        #menuHeader .i-container i:hover {
+            background-color: #64a0d2;
+        }
+
+        #menuHeader .bx-trash-alt:hover {
+            background-color: #dab5b9;
+        }
+
+        #menuHeader .bx-plus:hover {
+            background-color: rgba(218, 230, 245, 0.78);
+        }
+
+        #menuHeader .event-block {
+            position: relative;
+            z-index: 9999;
+        }
+
+    </style>
+
     <div class="app-brand demo">
         <a href="/" class="app-brand-link">
             <span>WTF2</span>
@@ -40,7 +60,7 @@
                         </div>
                         <div th:text="${page.title}">ROOT</div>
                         <div class="ms-auto event-block">
-                            <i role="button" class="bx bx-trash-alt" th:onclick="'deletePage(' + ${page.id} + ')'"></i>
+                            <i role="button" class="bx bx-trash-alt" th:onclick="'deletePage(' + ${page.id} + ', event)'"></i>
                             <i role="button" th:id="${'btn' + page.id}" class="bx bx-plus" th:onclick="'addSubPageBlock(' + ${page.id} + ')'"></i>
                         </div>
                     </a>
@@ -81,6 +101,7 @@
     </div>
 
 
+    <!--suppress JSDeprecatedSymbols -->
     <script th:inline="javascript">
         $(function() {
             console.log('left layout init');
@@ -110,14 +131,14 @@
             let pageBlock =
 
                 '<div id="pageItem' + blankPageId + '" class="menu-item">' +
-                    '<a role="page" href="/pages/' + blankPageId + '/details" class="menu-link justify-content-between p-0 pt-1"' +
+                    '<a role="page" href="/pages/' + blankPageId + '/details" class="menu-link justify-content-between p-0 pt-1" ' +
                         'onmouseover="itemMouseOver(this)" onmouseout="itemMouseOut(this)">' +
                         '<div class="i-container event-block">' +
                             '<i role="button" class="menu-icon tf-icon bx bx-cube-alt" onclick="dropDownToggle(this, ' + blankPageId + ')"></i>' +
                         '</div>' +
                         '<div>제목없음</div>' +
                         '<div class="ms-auto event-block">' +
-                            '<i role="button" class="bx bx-trash-alt" onclick="deletePage(' + blankPageId + ')"></i>' +
+                            '<i role="button" class="bx bx-trash-alt" onclick="deletePage(' + blankPageId + ', event)"></i>' +
                             '<i role="button" id="btn' + blankPageId + '" class="bx bx-plus" onclick="addSubPageBlock(' + blankPageId + ')"></i>' +
                         '</div>' +
                     '</a>' +
@@ -134,9 +155,7 @@
             if (e.target.matches('i[role="button"]')) {
                 return; // 특정 요소에서는 이벤트 처리를 하지 않음
             }
-            alert(aTag);
 
-            // console.log('href> ', $(aTag).prop('href'));
             $('#pageContext').load($(aTag).prop('href'));
         }
 
@@ -201,15 +220,15 @@
 
             let pageBlock =
 
-                '<div class="menu-item">' +
-                    '<a role="page" href="/pages/' + page.id + '/details" class="menu-link justify-content-between p-0 pt-1"' +
+                '<div id="pageItem' + page.id + '" class="menu-item">' +
+                    '<a role="page" href="/pages/' + page.id + '/details" class="menu-link justify-content-between p-0 pt-1" ' +
                         'onmouseover="itemMouseOver(this)" onmouseout="itemMouseOut(this)">' +
                         '<div class="i-container event-block">' +
                             '<i role="button" class="menu-icon tf-icon bx bx-cube-alt" onclick="dropDownToggle(this, ' + page.id + ')"></i>' +
                         '</div>' +
                         '<div>' + page.title + '</div>' +
                         '<div class="ms-auto event-block">' +
-                            '<i role="button" class="bx bx-trash-alt" onclick="deletePage(' + page.id + ')"></i>' +
+                            '<i role="button" class="bx bx-trash-alt" onclick="deletePage(' + page.id + ', event)"></i>' +
                             '<i role="button" id="btn' + page.id + '" class="bx bx-plus" onclick="addSubPageBlock(' + page.id + ')"></i>' +
                         '</div>' +
                     '</a>' +
@@ -234,8 +253,8 @@
             return subItems;
         }
 
-        function deletePage(id) {
-            console.log('delete: ', id);
+        function deletePage(id, e) {
+            e.preventDefault();
 
             $.ajax({
                 url: '/boards/page/' + id,
