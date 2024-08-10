@@ -23,18 +23,16 @@ public class WebController {
 
     private final BoardService boardService;
 
-//    @ModelAttribute(name = "pages")
-//    public List<BoardResponseDto> pageMenuSetup(@RequestParam(required = false) Long parentId) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        if(authentication instanceof AnonymousAuthenticationToken) return null;
-//
-//        return boardService.getSubPageList(BoardType.PAGE, null);
-//    }
+    @ModelAttribute(name = "pages")
+    public List<BoardResponseDto> pageMenuSetup(@RequestParam(required = false) Long parentId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication instanceof AnonymousAuthenticationToken) return null;
+
+        return boardService.getSubPageList(BoardType.PAGE, null);
+    }
 
     @GetMapping("/")
     public String home(Model model) {
-        model.addAttribute("pages", boardService.getSubPageList(BoardType.PAGE, null));
-
         return "home";
     }
 
@@ -44,18 +42,25 @@ public class WebController {
     }
 
     @GetMapping("/notice-board")
-    public String boardPage() {
+    public String noticeBoardPage() {
         return WebPage.NOTICE_BOARD.getPath();
     }
 
     @GetMapping("/notice-board/register")
-    public String registerPage() { return WebPage.NOTICE_REGISTER.getPath();}
+    public String registerNotice() { return WebPage.NOTICE_REGISTER.getPath();}
 
     @GetMapping("/notice-board/details/{boardId}")
-    public String detailsPage(@PathVariable(name = "boardId") Long boardId, Model model) {
+    public String noticeDetails(@PathVariable(name = "boardId") Long boardId, Model model) {
         model.addAttribute("boardId", boardId);
 
         return WebPage.NOTICE_DETAILS.getPath();
+    }
+
+    @GetMapping("/pages/{boardId}/details")
+    public String pageDetails(@PathVariable(name = "boardId") Long boardId, Model model) {
+        model.addAttribute("boardId", boardId);
+
+        return WebPage.PAGE_DETAILS.getPath();
     }
 
     @GetMapping("/organization")

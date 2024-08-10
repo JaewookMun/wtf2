@@ -23,6 +23,14 @@
     padding-right: 6rem !important;
 }
 
+.cps-10 {
+    padding-left: 10rem !important;
+}
+
 .cpe-15 {
     padding-right: 15rem !important;
+}
+
+.cpt-6 {
+    padding-top: 6rem !important;
 }

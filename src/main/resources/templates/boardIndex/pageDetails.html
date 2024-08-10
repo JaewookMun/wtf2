@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <div class="row cps-10 cpe-15 cpt-6">
+        <div class="py-1">
+            <h3 id="noticeTitle" class="row"></h3>
+        </div>
+        <div class="mt-2 mb-2">
+            <div id="textContainer" class="text-container">
+                <div id="tLine1" class="row t-line" data-line-id="1">
+                    test
+                </div>
+            </div>
+        </div>
+        <div class="text-end">
+        </div>
+    </div>
+
+    <input type="hidden" id="boardId" th:value="${boardId}">
+
+    <script th:inline="javascript">
+
+        $(function () {
+            initBoardDetails($('#boardId').val());
+
+            $('#textContainer .t-line').each(function() {
+                    makeLineEditable($(this).prop('id'))
+                }
+            )
+        });
+
+        function initBoardDetails(id) {
+            $.ajax({
+                url: '/boards/page/' + id,
+                method: 'GET',
+                success: function(res) {
+                    if (res.result == 'SUCCESS') {
+                        $('#noticeTitle').text(res.data.title);
+
+                        console.log('lines: ', res.data.lines);
+
+                        // $('#noticeText').text(res.data.content);
+                    }
+                }
+            });
+        }
+
+        function makeLineEditable(id) {
+            $('#' + id).on('click', function() {
+                // editable
+                $(this).prop(contentEditable, true);
+
+                // add event listener
+                $(this).on('keydown', function (e) {
+                    if (e.key == 'Enter') {
+                            e.preventDefault();
+                            $(this).prop(contentEditable, false);
+
+                            let nextLine = $(this).next('.t-line');
+
+                            if (nextLine.length != 0) {
+                                nextLine.prop(contentEditable, true);
+                                nextLine.focus();
+
+                                return;
+                            }
+
+                            let newLineId = getNewLineId($('#boardId').val());
+
+                            console.log('nope... uu')
+                            return;
+                    }
+                })
+
+                $(this).focus();
+            })
+        }
+
+        function getNewLineId(id) {
+            let newId;
+            $.ajax({
+                url: '/page/' + id + '/newline',
+                method: 'GET',
+                async: false,
+                success: function (res) {
+                    console.log('newId ', res.data());
+
+                },
+            })
+        }
+
+        function getLineHtml() {
+
+            $.ajax({
+
+            })
+
+            let line =
+                '';
+
+        }
+
+
+    </script>
+</html>

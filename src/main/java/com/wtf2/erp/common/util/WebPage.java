@@ -19,6 +19,10 @@ public enum WebPage {
      */
     NOTICE_DETAILS("boardIndex/noticeDetails"),
     /**
+     * boardIndex/pageDetails
+     */
+    PAGE_DETAILS("boardIndex/pageDetails"),
+    /**
      * organization/orgMain
      */
     ORGANIZATION("organization/orgMain");

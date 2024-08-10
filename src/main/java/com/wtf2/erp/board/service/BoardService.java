@@ -2,13 +2,12 @@ package com.wtf2.erp.board.service;
 
 import com.wtf2.erp.board.domain.Board;
 import com.wtf2.erp.board.domain.BoardType;
-import com.wtf2.erp.board.dto.BoardDetailsResponseDto;
-import com.wtf2.erp.board.dto.BoardRequestDto;
-import com.wtf2.erp.board.dto.BoardResponseDto;
+import com.wtf2.erp.board.domain.PageContent;
+import com.wtf2.erp.board.dto.*;
 import com.wtf2.erp.board.repository.BoardQuerydslRepository;
 import com.wtf2.erp.board.repository.BoardRepository;
+import com.wtf2.erp.board.repository.PageContentRepository;
 import com.wtf2.erp.common.dto.DataTableRequest;
-import com.wtf2.erp.company.repository.CompanyRepository;
 import com.wtf2.erp.config.security.AppUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -16,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,9 +28,10 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final BoardQuerydslRepository boardQuerydslRepository;
-    private final CompanyRepository companyRepository;
+    private final PageContentRepository pageContentRepository;
 
     private static final String NON_TITLE = "제목없음";
+    private static final String NULL_STRING = "";
 
     /**
      * 하위 페이지 리스트 조회
@@ -66,7 +67,7 @@ public class BoardService {
                 .company(getCurrentAuthenticatedUser().getCompany())
                 .build();
 
-        board.addContent(requestDto.getContent());
+        board.addText(requestDto.getContent());
 
         return boardRepository.save(board).getId();
     }
@@ -88,7 +89,7 @@ public class BoardService {
      * @return
      */
     @Transactional
-    public Long postSubPageFor(Long parentId) {
+    public Long postPageFor(Long parentId) {
 
         Optional<Board> parent =
                 Optional.ofNullable(parentId)
@@ -98,13 +99,11 @@ public class BoardService {
                         );
 
         Board blankBoard = new Board(NON_TITLE, BoardType.PAGE, getCurrentAuthenticatedUser().getCompany());
-        blankBoard.addContent("");
-        boardRepository.save(blankBoard);
+        blankBoard.addText(NULL_STRING);
 
         parent.ifPresent(p -> p.addChild(blankBoard));
 
-        // flush()를 사용하지 않으면 null 반환
-//        boardRepository.flush();
+        boardRepository.save(blankBoard);
 
         return blankBoard.getId();
     }
@@ -121,12 +120,38 @@ public class BoardService {
         Board deleteTarget = boardRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("EMPTY"));
 
-        if (!deleteTarget.getCompany().equals(getCurrentAuthenticatedUser().getCompany()))
-            throw new IllegalStateException("DO NOT HAVE AUTH");
+        Assert.state(deleteTarget.getCompany().equals(getCurrentAuthenticatedUser().getCompany()),
+                "DO NOT HAVE AUTH");
 
         if (!deleteTarget.getType().equals(BoardType.PAGE))
             throw new IllegalArgumentException("NOT SAME TYPE");
 
+        pageContentRepository.deleteByBoardId(id);
         boardRepository.delete(deleteTarget);
+    }
+
+    @Transactional
+    public Long newPageLine(Long boardId) {
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("EMPTY"));
+
+        Assert.state(board.getType().equals(BoardType.PAGE),
+                "BOARD TYPE should be PAGE for new page line");
+
+        return board.addText(NULL_STRING);
+    }
+
+    public PageDetailsDto getPageDetails(Long id) {
+        Board board = boardRepository.findById(id)
+                .orElseThrow();
+
+        List<TextLine> textLines = pageContentRepository.findByBoardIdOrderByIndex(id)
+                .stream().map(TextLine::new)
+                .collect(Collectors.toList());
+
+        return PageDetailsDto.builder()
+                .title(board.getTitle())
+                .lines(textLines)
+                .build();
     }
 }

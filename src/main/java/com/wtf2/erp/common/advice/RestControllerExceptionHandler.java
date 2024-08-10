@@ -10,6 +10,10 @@ public class RestControllerExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public JsonResponse<?> handleDataIntegrityViolationException(Exception e) {
-        return JsonResponse.fail().message(e.getMessage()).buildWith(null);
+        e.printStackTrace();
+
+        return JsonResponse.fail()
+                .message(e.getMessage())
+                .buildWith(null);
     }
 }

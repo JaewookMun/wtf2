@@ -4,6 +4,7 @@ import com.wtf2.erp.board.domain.BoardType;
 import com.wtf2.erp.board.dto.BoardDetailsResponseDto;
 import com.wtf2.erp.board.dto.BoardRequestDto;
 import com.wtf2.erp.board.dto.BoardResponseDto;
+import com.wtf2.erp.board.dto.PageDetailsDto;
 import com.wtf2.erp.board.service.BoardService;
 import com.wtf2.erp.common.dto.DataTableRequest;
 import com.wtf2.erp.common.dto.DataTableResponse;
@@ -56,25 +57,40 @@ public class BoardController {
                 .buildWith(boardService.getBoardDetails(id));
     }
 
+    // ================================================================================================
+
     @PostMapping("/page")
-    public JsonResponse<Long> postSubPage(@RequestParam(required = false) Long parentId) {
+    public JsonResponse<Long> postPage(@RequestParam(required = false) Long parentId) {
         log.info("parentId: {}", parentId);
 
         return JsonResponse.succeed()
-                .buildWith(boardService.postSubPageFor(parentId));
+                .buildWith(boardService.postPageFor(parentId));
     }
 
-    @GetMapping("/page/{parentId}/sub-items")
-    public JsonResponse<List<BoardResponseDto>> subItems(@PathVariable(name = "parentId") Long id) {
+    @GetMapping("/page/{id}")
+    public JsonResponse<PageDetailsDto> pageDetails(@PathVariable(name = "id") Long id) {
+
+        return JsonResponse.succeed()
+                .buildWith(boardService.getPageDetails(id));
+    }
+
+    @GetMapping("/page/{boardId}/sub-items")
+    public JsonResponse<List<BoardResponseDto>> subItems(@PathVariable(name = "boardId") Long id) {
 
         return JsonResponse.succeed().buildWith(boardService.getSubPageList(BoardType.PAGE, id));
     }
 
-    @DeleteMapping("/page/{id}")
-    public JsonResponse<String> deletePage(@PathVariable(name = "id") Long id) {
+    @DeleteMapping("/page/{boardId}")
+    public JsonResponse<String> deletePage(@PathVariable(name = "boardId") Long boardId) {
 
-        boardService.deletePage(id);
+        boardService.deletePage(boardId);
 
         return JsonResponse.succeed().build();
+    }
+
+    @GetMapping("/page/{boardId}/newline")
+    public JsonResponse<Long> newline(@PathVariable(name = "boardId") Long boardId) {
+        return JsonResponse.succeed()
+                .buildWith(boardService.newPageLine(boardId));
     }
 }
