@@ -138,7 +138,10 @@ public class BoardService {
         Assert.state(board.getType().equals(BoardType.PAGE),
                 "BOARD TYPE should be PAGE for new page line");
 
-        return board.addText(NULL_STRING);
+        board.addText(NULL_STRING);
+        boardRepository.save(board);
+
+        return board.getLastPageLineId();
     }
 
     public PageDetailsDto getPageDetails(Long id) {

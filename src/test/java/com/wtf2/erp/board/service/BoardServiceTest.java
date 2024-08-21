@@ -48,4 +48,16 @@ class BoardServiceTest {
         assertThat(subCount).isEqualTo(0);
     }
 
+    @Test
+    @DisplayName("create new page line")
+    void newPageLine() {
+        //given
+        long boardId = 3L;
+
+        //when
+        Long newPageLineId = boardService.newPageLine(boardId);
+
+        //then
+        Assertions.assertThat(newPageLineId).isNotNull();
+    }
 }

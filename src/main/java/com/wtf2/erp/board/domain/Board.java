@@ -59,19 +59,16 @@ public class Board extends BaseEntity {
     /*
      * method
      */
-    public Long addText(String text) {
+    public void addText(String text) {
         if (type.equals(BoardType.PAGE)) {
             PageContent pageContent = new PageContent(text);
             pageContent.setBoard(this);
             pageLines.add(pageContent);
 
-            return pageContent.getId();
+        } else {
+            this.content = new Content(text);
+            content.setBoard(this);
         }
-
-        this.content = new Content(text);
-        content.setBoard(this);
-
-        return content.getId();
     }
 
 //    public PageContent getNewPageLine(String textLine) {
@@ -88,5 +85,9 @@ public class Board extends BaseEntity {
 
     protected void setParent(Board parent) {
         this.parent = parent;
+    }
+
+    public Long getLastPageLineId() {
+        return pageLines.get(pageLines.size() - 1).getId();
     }
 }
