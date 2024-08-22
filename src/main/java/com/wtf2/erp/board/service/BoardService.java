@@ -139,7 +139,7 @@ public class BoardService {
                 "BOARD TYPE should be PAGE for new page line");
 
         board.addText(NULL_STRING);
-        boardRepository.save(board);
+        boardRepository.flush();
 
         return board.getLastPageLineId();
     }
