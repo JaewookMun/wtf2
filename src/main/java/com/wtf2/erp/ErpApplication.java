@@ -47,7 +47,7 @@ public class ErpApplication {
 		Board b = new Board("B", BoardType.PAGE, company);
 		Board c = new Board("C", BoardType.PAGE, company);
 
-		parent.addText("");
+		parent.addText("워크스페이스 입니다.");
 		a.addText("");
 		b.addText("");
 		c.addText("");
