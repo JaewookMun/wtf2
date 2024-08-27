@@ -1,10 +1,7 @@
 package com.wtf2.erp.board.controller;
 
 import com.wtf2.erp.board.domain.BoardType;
-import com.wtf2.erp.board.dto.BoardDetailsResponseDto;
-import com.wtf2.erp.board.dto.BoardRequestDto;
-import com.wtf2.erp.board.dto.BoardResponseDto;
-import com.wtf2.erp.board.dto.PageDetailsDto;
+import com.wtf2.erp.board.dto.*;
 import com.wtf2.erp.board.service.BoardService;
 import com.wtf2.erp.common.dto.DataTableRequest;
 import com.wtf2.erp.common.dto.DataTableResponse;
@@ -57,21 +54,19 @@ public class BoardController {
                 .buildWith(boardService.getBoardDetails(id));
     }
 
+    // left menu 관련
     // ================================================================================================
 
-    @PostMapping("/page")
-    public JsonResponse<Long> postPage(@RequestParam(required = false) Long parentId) {
-        log.info("parentId: {}", parentId);
+    /**
+     * boardId = parent board id
+     * 만약 상위 page가 존재하지 않을 경우 boardId = -1
+     */
+    @PostMapping("/page/{boardId}")
+    public JsonResponse<Long> postPage(@PathVariable(name = "boardId") Long boardId) {
+        log.info("boardId: {}", boardId);
 
         return JsonResponse.succeed()
-                .buildWith(boardService.postPageFor(parentId));
-    }
-
-    @GetMapping("/page/{id}")
-    public JsonResponse<PageDetailsDto> pageDetails(@PathVariable(name = "id") Long id) {
-
-        return JsonResponse.succeed()
-                .buildWith(boardService.getPageDetails(id));
+                .buildWith(boardService.postPageFor(boardId));
     }
 
     @GetMapping("/page/{boardId}/sub-items")
@@ -88,9 +83,34 @@ public class BoardController {
         return JsonResponse.succeed().build();
     }
 
-    @GetMapping("/page/{boardId}/newline")
+    // page details 관련
+    // ================================================================================================
+
+    @GetMapping("/page/{boardId}")
+    public JsonResponse<PageDetailsDto> pageDetails(@PathVariable(name = "boardId") Long id) {
+
+        return JsonResponse.succeed()
+                .buildWith(boardService.getPageDetails(id));
+    }
+
+    @PutMapping("/page/{boardId}/{lineId}")
+    public JsonResponse<Boolean> updatePageLine(
+            @PathVariable(name = "boardId") Long boardId,
+            @PathVariable(name = "lineId") Long lineId,
+            String lineContent) {
+
+        System.out.println("lineContent = " + lineContent);
+        PageLineUpdateDto request = new PageLineUpdateDto(boardId, lineId, lineContent);
+
+        return JsonResponse.succeed()
+                .buildWith(boardService.updatePageLine(request));
+    }
+
+    @PostMapping("/page/{boardId}/newline")
     public JsonResponse<Long> newline(@PathVariable(name = "boardId") Long boardId) {
         return JsonResponse.succeed()
                 .buildWith(boardService.newPageLine(boardId));
     }
+
+
 }

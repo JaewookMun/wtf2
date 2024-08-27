@@ -93,6 +93,7 @@ public class BoardService {
 
         Optional<Board> parent =
                 Optional.ofNullable(parentId)
+                        .filter(id -> id > -1)
                         .map(
                                 id -> boardRepository.findById(id)
                                         .orElseThrow(() -> new IllegalArgumentException("NOT EXIST"))
@@ -156,5 +157,13 @@ public class BoardService {
                 .title(board.getTitle())
                 .lines(textLines)
                 .build();
+    }
+
+    @Transactional
+    public Boolean updatePageLine(PageLineUpdateDto request) {
+        PageContent pageContent = pageContentRepository.findByBoardIdAndId(request.getBoardId(), request.getLineId());
+        pageContent.changeLine(request.getLineContent());
+
+        return true;
     }
 }

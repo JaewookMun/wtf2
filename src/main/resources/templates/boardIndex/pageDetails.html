@@ -1,15 +1,43 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<style>
+    #textContainer .line-block {
+        margin-top: 1px;
+        margin-bottom: 1px;
+    }
 
-    <div class="row cps-10 cpe-15 cpt-6">
+    #textContainer .t-line {
+        height: 24px;
+    }
+    #textContainer .t-line:hover {
+        border-width: 1px;
+        border-style: dotted;
+        border-color: gray;
+    }
+    #textContainer .t-line[contenteditable="true"] {
+        outline: none;
+        border-left: 1px solid transparent;
+    }
+    #textContainer .t-line[contenteditable="true"]:focus {
+        outline: none;
+        border-left-color: red;
+    }
+
+    .c-col {
+        flex: 0 0 auto;
+        width: 16px;
+    }
+</style>
+
+    <div class="cps-10 cpe-15 cpt-6">
         <div class="py-1">
-            <h3 id="noticeTitle" class="row"></h3>
+            <h3 id="noticeTitle"></h3>
         </div>
         <div class="mt-2 mb-2">
             <div id="textContainer" class="text-container">
-                <div id="tLine1" class="row t-line" data-line-id="1">
-                    test
-                </div>
+<!--                <div id="tLine1" class="row t-line" data-line-id="1">-->
+<!--                    test-->
+<!--                </div>-->
             </div>
         </div>
         <div class="text-end">
@@ -22,82 +50,122 @@
 
         $(function () {
             initBoardDetails($('#boardId').val());
-
-            $('#textContainer .t-line').each(function() {
-                    makeLineEditable($(this).prop('id'))
-                }
-            )
         });
 
-        function initBoardDetails(id) {
+        function initBoardDetails(boardId) {
             $.ajax({
-                url: '/boards/page/' + id,
+                url: '/boards/page/' + boardId,
                 method: 'GET',
+                async: false,
                 success: function(res) {
                     if (res.result == 'SUCCESS') {
-                        $('#noticeTitle').text(res.data.title);
 
-                        console.log('lines: ', res.data.lines);
+                        let { title, lines } = res.data;
 
-                        // $('#noticeText').text(res.data.content);
+                        $('#noticeTitle').text(title);
+
+                        // console.log('lines: ', lines);
+                        lines.forEach((e) => {
+                            $('#textContainer').append(createLineBlock(e));
+                        });
+
+                        // init
+                        $('#textContainer .t-line').each(function() {
+                                makeLineEditable($(this).prop('id'))
+                            }
+                        );
                     }
                 }
             });
         }
 
-        function makeLineEditable(id) {
-            $('#' + id).on('click', function() {
+        function createLineBlock(line) {
+            let lineBlock = '' +
+                '<div class="position-relative line-block" style="display: flex;">' +
+                    '<div class="position-absolute t-util d-none" style="left: -18px">' +
+                        '<span role="button">+</span>' +
+                    '</div>' +
+                    '<div id="tLine' + line.id + '" class="t-line" data-line-id="' + line.id + '">' +
+                        line.line +
+                    '</div>' +
+                '</div>';
+
+            return lineBlock;
+        }
+
+        function makeLineEditable(tLineId) {
+            $('#' + tLineId).on('click keydown', function() {
                 // editable
+                // console.log('[INFO] makeLineEditable(): ', this);
                 $(this).prop(contentEditable, true);
-
-                // add event listener
-                $(this).on('keydown', function (e) {
-                    if (e.key == 'Enter') {
-                            e.preventDefault();
-                            $(this).prop(contentEditable, false);
-
-                            let nextLine = $(this).next('.t-line');
-
-                            if (nextLine.length != 0) {
-                                nextLine.prop(contentEditable, true);
-                                nextLine.focus();
-
-                                return;
-                            }
-
-                            let newLineId = getNewLineId($('#boardId').val());
-
-                            console.log('nope... uu')
-                            return;
-                    }
-                })
-
                 $(this).focus();
+
+                addEventListener(this);
             })
         }
 
         function getNewLineId(id) {
             let newId;
             $.ajax({
-                url: '/page/' + id + '/newline',
-                method: 'GET',
+                url: '/boards/page/' + id + '/newline',
+                method: 'POST',
                 async: false,
                 success: function (res) {
-                    console.log('newId ', res.data());
-
-                },
+                    console.log('newId ', res.data);
+                    newId = res.data;
+                }
             })
+            if (newId === undefined) console.log('[ERROR]: fail to create new line from ', id);
+
+            return newId;
         }
 
-        function getLineHtml() {
+        function addEventListener(element) {
+            $(element).on('keydown', function(e) {
+                if (e.key == 'Enter') {
+                    e.preventDefault();
+                    $(this).prop(contentEditable, false);
 
-            $.ajax({
+                    // let nextLine = $(this).next('.t-line');
+                    let nextLine = $(this).parent('.line-block').next('.line-block').find('.t-line');
 
+                    if (nextLine.length == 0) {
+                        let newLineId = getNewLineId($('#boardId').val());
+                        let lineBlock = createLineBlock({ 'id': newLineId, 'line': ''});
+
+                        $('#textContainer').append(lineBlock);
+                        makeLineEditable('tLine' + newLineId);
+                        nextLine = $(lineBlock);
+                    }
+
+                    nextLine.prop(contentEditable, true);
+                    nextLine.focus();
+                }
+                else {
+                    let boardId = $('#boardId').val();
+                    let dataLineId = $(this).data('lineId');
+                    let lineContent = $(this).text();
+                    console.log('dataLineId> ', dataLineId);
+                    console.log('lineContent> ', lineContent);
+
+                    $.ajax({
+                        url: '/boards/page/' + boardId + '/' + dataLineId,
+                        method: 'PUT',
+                        data: {'lineContent': lineContent},
+                        success: function() {
+
+                        }
+                    })
+                }
             })
 
-            let line =
-                '';
+            $(element).on('mouseenter', function() {
+                $(this).prev('.t-util').removeClass('d-none');
+            })
 
+            $(element).on('mouseleave', function() {
+                $(this).prev('.t-util').addClass('d-none');
+            })
         }
 
 

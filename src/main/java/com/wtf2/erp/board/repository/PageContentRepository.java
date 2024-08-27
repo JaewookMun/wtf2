@@ -9,5 +9,7 @@ public interface PageContentRepository extends JpaRepository<PageContent, Long> 
 
     List<PageContent> findByBoardIdOrderByIndex(Long boardId);
 
+    PageContent findByBoardIdAndId(Long boardId, Long id);
+
     void deleteByBoardId(Long boardId);
 }

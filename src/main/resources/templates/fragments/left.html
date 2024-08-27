@@ -161,11 +161,12 @@
 
         function postBlankSubPage(parentId) {
             let blankPageId = -1;
+            if (parentId === undefined) parentId = -1;
 
             $.ajax({
-                url: '/boards/page',
+                url: '/boards/page/' + parentId,
                 method: 'POST',
-                data: {'parentId': parentId},
+                // data: {'parentId': parentId},
                 async: false,
                 success: function(res) {
                     blankPageId = res.data;

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -27,5 +28,9 @@ public class PageContent {
 
     protected void setBoard(Board board) {
         this.board = board;
+    }
+
+    public void changeLine(String line) {
+        if (StringUtils.hasText(line)) this.line = line;
     }
 }
