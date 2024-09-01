@@ -21,7 +21,9 @@ spring:
         format_sql: true
 
   config:
-    import: application-api.yml
+    import:
+      - application-api.yml
+      - application-oauth.yml
 
 
 logging.level:
