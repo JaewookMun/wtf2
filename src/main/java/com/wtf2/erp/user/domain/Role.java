@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum Role {
+    TEMP("ROLE_TEMP"),
     GENERAL("ROLE_GENERAL"),
     ADMIN("ROLE_ADMIN"),
     SUPER_ADMIN("ROLE_SUPER_ADMIN");
