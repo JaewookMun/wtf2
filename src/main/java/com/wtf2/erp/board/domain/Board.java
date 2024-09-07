@@ -1,10 +1,9 @@
 package com.wtf2.erp.board.domain;
 
-import com.wtf2.erp.company.domain.Company;
+import com.wtf2.erp.group.domain.Group;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +29,8 @@ public class Board extends BaseEntity {
     private int viewCount;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
-    private Company company;
+    @JoinColumn(name = "group_id")
+    private Group group;
 
     @Enumerated(EnumType.STRING)
     private BoardType type;
@@ -50,10 +49,10 @@ public class Board extends BaseEntity {
      * Constructor
      */
     @Builder
-    public Board(String title, BoardType type, Company company) {
+    public Board(String title, BoardType type, Group group) {
         this.title = title;
         this.type = type;
-        this.company = company;
+        this.group = group;
     }
 
     /*

@@ -24,7 +24,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     List<Board> findByType(BoardType type, Pageable pageable);
 
-    @EntityGraph(attributePaths = {"content", "company", "pageLines"})
+    @EntityGraph(attributePaths = {"content", "group", "pageLines"})
     @Override
     Optional<Board> findById(Long aLong);
 }

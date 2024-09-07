@@ -1,6 +1,6 @@
 package com.wtf2.erp.user.domain;
 
-import com.wtf2.erp.company.domain.Company;
+import com.wtf2.erp.group.domain.Group;
 import com.wtf2.erp.dept.domain.Dept;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -39,16 +39,24 @@ public class User {
     private Dept dept;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
-    private Company company;
+    @JoinColumn(name = "group_id")
+    private Group group;
 
     @Builder
-    public User(Company company, Dept dept, String name, String loginId, String password, Role role) {
-        this.company = company;
+    public User(Dept dept, String name, String loginId, String password, Role role) {
         this.dept = dept;
         this.name = name;
         this.loginId = loginId;
         this.password = password;
         this.role = role;
+    }
+
+    public void updateInfo(String name, String mobile) {
+        this.name = name;
+        this.mobile = mobile;
+    }
+
+    public void addGroup() {
+
     }
 }

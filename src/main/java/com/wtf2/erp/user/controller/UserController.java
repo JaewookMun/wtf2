@@ -14,15 +14,13 @@ public class UserController {
 
     private final UserService userService;
 
-    // TODO : OAuth를 활용한 사용자 등록기능 추가
     @PostMapping("/registration")
-    public JsonResponse<Long> registerUser(@RequestParam(name = "companyId") Long companyId,
-                                           @RequestParam(name = "userName") String userName,
+    public JsonResponse<Long> registerUser(@RequestParam(name = "userName") String userName,
                                            @RequestParam(name = "email") String email,
                                            @RequestParam(name = "password") String password) {
 
         return JsonResponse
                 .succeed()
-                .buildWith(userService.register(companyId, userName, email, password));
+                .buildWith(userService.register(userName, email, password));
     }
 }

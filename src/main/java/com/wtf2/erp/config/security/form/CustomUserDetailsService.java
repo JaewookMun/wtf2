@@ -1,5 +1,6 @@
-package com.wtf2.erp.config.security;
+package com.wtf2.erp.config.security.form;
 
+import com.wtf2.erp.config.security.form.AppUserDetails;
 import com.wtf2.erp.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .map(user -> AppUserDetails.builder()
                         .username(user.getLoginId())
                         .password(user.getPassword())
-                        .company(user.getCompany())
+                        .group(user.getGroup())
                         .authorities(List.of(new SimpleGrantedAuthority(user.getRole().getAuthority())))
                         .build())
                 .orElseThrow(() -> new UsernameNotFoundException("There is no user matches the loginId"));

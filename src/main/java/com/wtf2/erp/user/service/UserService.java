@@ -1,7 +1,7 @@
 package com.wtf2.erp.user.service;
 
-import com.wtf2.erp.company.domain.Company;
-import com.wtf2.erp.company.repository.CompanyRepository;
+import com.wtf2.erp.group.domain.Group;
+import com.wtf2.erp.group.repository.GroupRepository;
 import com.wtf2.erp.user.domain.Role;
 import com.wtf2.erp.user.domain.User;
 import com.wtf2.erp.user.repository.UserRepository;
@@ -18,18 +18,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final CompanyRepository companyRepository;
+    private final GroupRepository groupRepository;
 
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public Long register(Long companyId, String userName, String email, String password) {
-        Company company = companyRepository.findById(companyId).orElseThrow();
+    public Long register(String userName, String email, String password) {
         password = passwordEncoder.encode(password);
 
         // TODO : 부서 / 사용자 권한 체크
         User newUser = User.builder()
-                .company(company)
                 .name(userName)
                 .loginId(email)
                 .password(password)

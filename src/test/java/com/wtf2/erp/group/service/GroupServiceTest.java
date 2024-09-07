@@ -1,4 +1,4 @@
-package com.wtf2.erp.company.service;
+package com.wtf2.erp.group.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.wtf2.erp.common.dto.DataTableRequest;
@@ -9,18 +9,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.net.URISyntaxException;
 
 @SpringBootTest
-class CompanyServiceTest {
+class GroupServiceTest {
 
     @Autowired
-    CompanyService companyService;
+    GroupService groupService;
 
     @Test
-    void test() throws URISyntaxException, JsonProcessingException {
-
-        companyService.search(false
-                ,"삼성전자"
-                , DataTableRequest.builder()
-                        .draw(1).length(10).build());
+    void test() {
+        groupService.search("삼성전자");
     }
 
 }

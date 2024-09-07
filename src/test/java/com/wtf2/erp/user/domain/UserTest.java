@@ -20,7 +20,6 @@ class UserTest {
     @Test
     void test() {
         User newUser = User.builder()
-                .company(null)
                 .name("james")
                 .loginId("test@gmail.com")
                 .password("password")

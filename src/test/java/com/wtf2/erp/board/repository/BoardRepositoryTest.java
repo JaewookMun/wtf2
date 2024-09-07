@@ -4,8 +4,8 @@ import com.wtf2.erp.board.domain.Board;
 import com.wtf2.erp.board.domain.BoardType;
 import com.wtf2.erp.board.dto.BoardRequestDto;
 import com.wtf2.erp.board.service.BoardService;
-import com.wtf2.erp.company.domain.Company;
-import com.wtf2.erp.company.repository.CompanyRepository;
+import com.wtf2.erp.group.domain.Group;
+import com.wtf2.erp.group.repository.GroupRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ class BoardRepositoryTest {
     @Autowired
     BoardService boardService;
     @Autowired
-    CompanyRepository companyRepository;
+    GroupRepository groupRepository;
 
     @Test
     @DisplayName("EntityGraph test")
@@ -55,13 +55,13 @@ class BoardRepositoryTest {
     @Test
     @DisplayName("Children")
     void test2() {
-        Company company = companyRepository.findAll().stream().findAny().get();
+        Group group = groupRepository.findAll().stream().findAny().get();
 
-        Board parent = new Board("super", BoardType.PAGE, company);
+        Board parent = new Board("super", BoardType.PAGE, group);
 
-        Board sub1 = new Board("sub1", BoardType.PAGE, company);
-        Board sub2 = new Board("sub2", BoardType.PAGE, company);
-        Board sub3 = new Board("sub3", BoardType.PAGE, company);
+        Board sub1 = new Board("sub1", BoardType.PAGE, group);
+        Board sub2 = new Board("sub2", BoardType.PAGE, group);
+        Board sub3 = new Board("sub3", BoardType.PAGE, group);
         parent.getChildren().add(sub1);
         parent.getChildren().add(sub2);
         parent.getChildren().add(sub3);

@@ -5,7 +5,7 @@ import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.wtf2.erp.board.domain.Board;
 import com.wtf2.erp.board.domain.BoardType;
-import com.wtf2.erp.company.domain.Company;
+import com.wtf2.erp.group.domain.Group;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -19,14 +19,14 @@ public class BoardQuerydslRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public List<Board> findSubPages(BoardType type, Long parentId, Company company) {
+    public List<Board> findSubPages(BoardType type, Long parentId, Group group) {
         return queryFactory
                 .selectFrom(board)
                 .leftJoin(board.children).fetchJoin()
                 .where(
                         board.type.eq(type),
                         parentIdEq(board.parent.id, parentId),
-                        board.company.eq(company)
+                        board.group.eq(group)
                 )
                 .fetch();
     }

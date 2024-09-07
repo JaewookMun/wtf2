@@ -1,4 +1,4 @@
-package com.wtf2.erp.company.domain;
+package com.wtf2.erp.group.domain;
 
 import com.wtf2.erp.dept.domain.Dept;
 import jakarta.persistence.*;
@@ -13,38 +13,43 @@ import java.util.Objects;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Company {
+@Table(name = "groups")
+public class Group {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "company_id")
+    @Column(name = "group_id")
     private Long id;
 
     private String name;
-    @Column(unique = true)
+
+    @Column(unique = true, nullable = false)
     private String guid;
 
-    private String ceo;
+    /**
+     * 사용자를 초대할 때, 특정 기간동안만 유효한 group code값 생성
+     */
+    @Column(unique = true)
+    private String code;
 
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
     private List<Dept> dept = new ArrayList<>();
 
-    public Company(String name, String guid, String ceo) {
+    public Group(String name, String guid) {
         this.name = name;
         this.guid = guid;
-        this.ceo = ceo;
     }
 
     public void addDept(Dept dept) {
         this.dept.add(dept);
-        dept.setCompany(this);
+        dept.setGroup(this);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Company company = (Company) o;
-        return getId().equals(company.getId()) && Objects.equals(getName(), company.getName()) && getGuid().equals(company.getGuid());
+        Group group = (Group) o;
+        return getId().equals(group.getId()) && Objects.equals(getName(), group.getName()) && getGuid().equals(group.getGuid());
     }
 
     @Override

@@ -1,5 +1,6 @@
-package com.wtf2.erp.config;
+package com.wtf2.erp.config.security;
 
+import com.wtf2.erp.config.security.oauth.CustomOauth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
+    private final CustomOauth2UserService customOauth2UserService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -24,8 +26,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
                         // permit resources
                         .requestMatchers(
-                                "/modules/**", "/css/**", "/js/**",
-                                "/companies/search", "/companies/registration",
+                        "/modules/**",
+                                "/css/**", "/js/**", "/images/**",
                                 "/users/registration"
                         ).permitAll()
                         .anyRequest().authenticated()
@@ -35,6 +37,9 @@ public class SecurityConfig {
                         .permitAll()
                         .defaultSuccessUrl("/"))
                 .userDetailsService(userDetailsService)
+                .oauth2Login(oLogin -> oLogin
+                        .loginPage("/")
+                        .userInfoEndpoint(end -> end.userService(customOauth2UserService)))
                 .build();
     }
 

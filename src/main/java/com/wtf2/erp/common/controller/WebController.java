@@ -4,10 +4,13 @@ import com.wtf2.erp.board.domain.BoardType;
 import com.wtf2.erp.board.dto.BoardResponseDto;
 import com.wtf2.erp.board.service.BoardService;
 import com.wtf2.erp.common.util.WebPage;
+import com.wtf2.erp.config.security.form.AppUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,20 +28,21 @@ public class WebController {
 
     @ModelAttribute(name = "pages")
     public List<BoardResponseDto> pageMenuSetup(@RequestParam(required = false) Long parentId) {
+        System.out.println("pageMenuSetup()");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication instanceof AnonymousAuthenticationToken) return null;
+        if (authentication instanceof AnonymousAuthenticationToken) return null;
 
         return boardService.getSubPageList(BoardType.PAGE, null);
     }
 
     @GetMapping("/")
     public String home(Model model) {
-        return "home";
-    }
+        System.out.println("home()");
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication authentication = context.getAuthentication();
+        AppUserDetails userDetails = (AppUserDetails) authentication.getPrincipal();
 
-    @GetMapping("/login")
-    public String login() {
-        return WebPage.LOGIN.getPath();
+        return "home";
     }
 
     @GetMapping("/notice-board")

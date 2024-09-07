@@ -1,6 +1,6 @@
 package com.wtf2.erp.dept.domain;
 
-import com.wtf2.erp.company.domain.Company;
+import com.wtf2.erp.group.domain.Group;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -25,8 +25,8 @@ public class Dept {
     private Dept parent;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
-    private Company company;
+    @JoinColumn(name = "group_id")
+    private Group group;
 
     @OneToMany(mappedBy = "id")
     private List<Dept> children = new ArrayList<>();
@@ -44,7 +44,7 @@ public class Dept {
         this.parent = parent;
     }
 
-    public void setCompany(Company company) {
-        this.company = company;
+    public void setGroup(Group group) {
+        this.group = group;
     }
 }

@@ -8,7 +8,7 @@ import com.wtf2.erp.board.repository.BoardQuerydslRepository;
 import com.wtf2.erp.board.repository.BoardRepository;
 import com.wtf2.erp.board.repository.PageContentRepository;
 import com.wtf2.erp.common.dto.DataTableRequest;
-import com.wtf2.erp.config.security.AppUserDetails;
+import com.wtf2.erp.config.security.form.AppUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -41,7 +41,7 @@ public class BoardService {
      */
     public List<BoardResponseDto> getSubPageList(BoardType boardType, Long parentId) {
 
-        return boardQuerydslRepository.findSubPages(boardType, parentId, getCurrentAuthenticatedUser().getCompany())
+        return boardQuerydslRepository.findSubPages(boardType, parentId, getCurrentAuthenticatedUser().getGroup())
                 .stream()
                 .map(board -> new BoardResponseDto(board, board.getChildren()))
                 .collect(Collectors.toList());
@@ -64,7 +64,7 @@ public class BoardService {
         Board board = Board.builder()
                 .title(requestDto.getTitle())
                 .type(BoardType.valueOf(requestDto.getType()))
-                .company(getCurrentAuthenticatedUser().getCompany())
+                .group(getCurrentAuthenticatedUser().getGroup())
                 .build();
 
         board.addText(requestDto.getContent());
@@ -99,7 +99,7 @@ public class BoardService {
                                         .orElseThrow(() -> new IllegalArgumentException("NOT EXIST"))
                         );
 
-        Board blankBoard = new Board(NON_TITLE, BoardType.PAGE, getCurrentAuthenticatedUser().getCompany());
+        Board blankBoard = new Board(NON_TITLE, BoardType.PAGE, getCurrentAuthenticatedUser().getGroup());
         blankBoard.addText(NULL_STRING);
 
         parent.ifPresent(p -> p.addChild(blankBoard));
@@ -121,7 +121,7 @@ public class BoardService {
         Board deleteTarget = boardRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("EMPTY"));
 
-        Assert.state(deleteTarget.getCompany().equals(getCurrentAuthenticatedUser().getCompany()),
+        Assert.state(deleteTarget.getGroup().equals(getCurrentAuthenticatedUser().getGroup()),
                 "DO NOT HAVE AUTH");
 
         if (!deleteTarget.getType().equals(BoardType.PAGE))

@@ -1,11 +1,12 @@
-package com.wtf2.erp.config.security;
+package com.wtf2.erp.config.security.form;
 
-import com.wtf2.erp.company.domain.Company;
+import com.wtf2.erp.group.domain.Group;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.util.Assert;
 
 import java.util.*;
@@ -17,23 +18,53 @@ import java.util.*;
  * 기능의 필요에 따라 구현
  */
 @Getter
-public class AppUserDetails implements UserDetails {
+public class AppUserDetails extends DefaultOAuth2User implements UserDetails {
 
-    private String password;
+    /**
+     * loginId : email format string
+     */
     private final String username;
+    private String password;
     /**
      * 불필요한 SELECT 쿼리를 방지하기 위해 Entity 인스턴스를 필드로 주입.
      */
-    private final Company company;
-    private final Set<GrantedAuthority> authorities;
+    private Group group;
+    private boolean isOAuthUser;
+//    private Set<GrantedAuthority> authorities;
+    private static final String FORM_ATTRIBUTE_KEY = "form";
+    private static final Map<String, Object> formAttributes = Map.of(FORM_ATTRIBUTE_KEY, "default");
 
-
+    // TODO : Group 제거 (entity를 저장하고 있는 것은 바람직하지 않아보임)
+    /**
+     * Constructor for form login
+     *
+     * @param username
+     * @param password
+     * @param group
+     * @param authorities
+     */
     @Builder
-    public AppUserDetails(String username, String password, Company company, Collection<? extends GrantedAuthority> authorities) {
+    public AppUserDetails(String username, String password, Group group, Collection<? extends GrantedAuthority> authorities) {
+        super(authorities, formAttributes, FORM_ATTRIBUTE_KEY);
+
         this.username = username;
         this.password = password;
-        this.company = company;
-        this.authorities = Collections.unmodifiableSet(authoritiesSetFor(authorities));
+        this.group = group;
+//        this.authorities = Collections.unmodifiableSet(authoritiesSetFor(authorities));
+    }
+
+    /**
+     * Constructor for OAuth login
+     *
+     * @param authorities
+     * @param attributes
+     * @param nameAttributeKey
+     * @param username
+     */
+    public AppUserDetails(String username, Map<String, Object> attributes, String nameAttributeKey, Collection<? extends GrantedAuthority> authorities) {
+        super(authorities, attributes, nameAttributeKey);
+        this.username = username;
+        isOAuthUser = true;
     }
 
     @Override

@@ -1,11 +1,11 @@
-package com.wtf2.erp.config.security;
+package com.wtf2.erp.config.security.oauth;
 
 import lombok.Builder;
 import lombok.Getter;
 
 import java.util.Map;
 
-import static com.wtf2.erp.config.security.Registration.NAVER;
+import static com.wtf2.erp.config.security.oauth.Registration.NAVER;
 
 @Getter
 public class OAuthAttributes {
