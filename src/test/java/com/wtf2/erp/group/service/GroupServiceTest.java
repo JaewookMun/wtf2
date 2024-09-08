@@ -1,12 +1,9 @@
 package com.wtf2.erp.group.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.wtf2.erp.common.dto.DataTableRequest;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.net.URISyntaxException;
 
 @SpringBootTest
 class GroupServiceTest {
@@ -15,8 +12,17 @@ class GroupServiceTest {
     GroupService groupService;
 
     @Test
+    @DisplayName("그룹 등록")
     void test() {
-        groupService.search("삼성전자");
+        // given
+        String groupName = "WTF2 - TEST";
+        String loginId = "test";
+
+        // when
+        groupService.register(groupName, loginId);
+
+        
     }
+
 
 }

@@ -1,6 +1,7 @@
 package com.wtf2.erp.config.security.form;
 
 import com.wtf2.erp.group.domain.Group;
+import com.wtf2.erp.group.dto.GroupInfo;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,12 +26,8 @@ public class AppUserDetails extends DefaultOAuth2User implements UserDetails {
      */
     private final String username;
     private String password;
-    /**
-     * 불필요한 SELECT 쿼리를 방지하기 위해 Entity 인스턴스를 필드로 주입.
-     */
-    private Group group;
+    private GroupInfo groupInfo;
     private boolean isOAuthUser;
-//    private Set<GrantedAuthority> authorities;
     private static final String FORM_ATTRIBUTE_KEY = "form";
     private static final Map<String, Object> formAttributes = Map.of(FORM_ATTRIBUTE_KEY, "default");
 
@@ -40,17 +37,15 @@ public class AppUserDetails extends DefaultOAuth2User implements UserDetails {
      *
      * @param username
      * @param password
-     * @param group
+     * @param groupInfo
      * @param authorities
      */
     @Builder
-    public AppUserDetails(String username, String password, Group group, Collection<? extends GrantedAuthority> authorities) {
+    public AppUserDetails(String username, String password, GroupInfo groupInfo, Collection<? extends GrantedAuthority> authorities) {
         super(authorities, formAttributes, FORM_ATTRIBUTE_KEY);
-
         this.username = username;
         this.password = password;
-        this.group = group;
-//        this.authorities = Collections.unmodifiableSet(authoritiesSetFor(authorities));
+        this.groupInfo = groupInfo;
     }
 
     /**
@@ -61,10 +56,15 @@ public class AppUserDetails extends DefaultOAuth2User implements UserDetails {
      * @param nameAttributeKey
      * @param username
      */
-    public AppUserDetails(String username, Map<String, Object> attributes, String nameAttributeKey, Collection<? extends GrantedAuthority> authorities) {
+    public AppUserDetails(String username, GroupInfo groupInfo, Map<String, Object> attributes, String nameAttributeKey, Collection<? extends GrantedAuthority> authorities) {
         super(authorities, attributes, nameAttributeKey);
         this.username = username;
+        this.groupInfo = groupInfo;
         isOAuthUser = true;
+    }
+
+    public void setGroupInfo(GroupInfo groupInfo) {
+        this.groupInfo = groupInfo;
     }
 
     @Override

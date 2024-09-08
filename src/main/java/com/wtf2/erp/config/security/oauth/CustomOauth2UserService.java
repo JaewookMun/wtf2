@@ -1,6 +1,9 @@
 package com.wtf2.erp.config.security.oauth;
 
+import com.wtf2.erp.association.domain.UserGroup;
 import com.wtf2.erp.config.security.form.AppUserDetails;
+import com.wtf2.erp.group.domain.Group;
+import com.wtf2.erp.group.dto.GroupInfo;
 import com.wtf2.erp.user.domain.Role;
 import com.wtf2.erp.user.domain.User;
 import com.wtf2.erp.user.repository.UserRepository;
@@ -21,7 +24,6 @@ import java.util.List;
 public class CustomOauth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     private final UserRepository userRepository;
-//    private final HttpSession session;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -35,13 +37,7 @@ public class CustomOauth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         OAuthAttributes receivedUser = OAuthAttributes.of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
 
-        AppUserDetails user = saveOrUpdate(receivedUser);
-
-//        return new DefaultOAuth2User(
-//                user.getAuthorities(),
-//                receivedUser.getAttributes(),
-//                receivedUser.getNameAttributeKey());
-        return user;
+        return saveOrUpdate(receivedUser);
     }
 
     private AppUserDetails saveOrUpdate(OAuthAttributes oAuthUser) {
@@ -56,16 +52,23 @@ public class CustomOauth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         user.updateInfo(oAuthUser.getName(), oAuthUser.getMobile());
         userRepository.save(user);
+        List<UserGroup> userGroups = user.getUserGroups();
 
-//        return AppUserDetails.builder()
-//                .username(user.getLoginId())
-//
-//                .authorities(List.of(new SimpleGrantedAuthority(user.getRole().getAuthority())))
-//
-//                .build();
+        GroupInfo groupInfo;
+        if (userGroups.isEmpty()) groupInfo = null;
+        else {
+            Group group = userGroups.stream()
+                    .filter(g -> g.isActive())
+                    .findFirst()
+                    .map(userGroup -> userGroup.getGroup())
+                    .get();
+
+            groupInfo = new GroupInfo(group.getId(), group.getName());
+        }
 
         return new AppUserDetails(
                 user.getLoginId(),
+                groupInfo,
                 oAuthUser.getAttributes(),
                 oAuthUser.getNameAttributeKey(),
                 List.of(new SimpleGrantedAuthority(user.getRole().getAuthority()))

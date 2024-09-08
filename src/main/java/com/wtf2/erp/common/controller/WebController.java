@@ -10,7 +10,6 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,11 +31,19 @@ public class WebController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication instanceof AnonymousAuthenticationToken) return null;
 
-        return boardService.getSubPageList(BoardType.PAGE, null);
+        AppUserDetails userDetails = (AppUserDetails) authentication.getPrincipal();
+
+        return boardService.getSubPageList(BoardType.PAGE, null, userDetails.getGroupInfo().getId());
+    }
+
+    @ModelAttribute(name = "groupName")
+    public String groupName(Authentication authentication) {
+
+        return ((AppUserDetails) authentication.getPrincipal()).getGroupInfo().getName();
     }
 
     @GetMapping("/")
-    public String home(Model model) {
+    public String home() {
         System.out.println("home()");
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication authentication = context.getAuthentication();

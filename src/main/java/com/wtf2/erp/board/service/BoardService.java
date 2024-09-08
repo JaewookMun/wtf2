@@ -8,11 +8,11 @@ import com.wtf2.erp.board.repository.BoardQuerydslRepository;
 import com.wtf2.erp.board.repository.BoardRepository;
 import com.wtf2.erp.board.repository.PageContentRepository;
 import com.wtf2.erp.common.dto.DataTableRequest;
-import com.wtf2.erp.config.security.form.AppUserDetails;
+import com.wtf2.erp.group.domain.Group;
+import com.wtf2.erp.group.repository.GroupRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BoardService {
 
+    private final GroupRepository groupRepository;
     private final BoardRepository boardRepository;
     private final BoardQuerydslRepository boardQuerydslRepository;
     private final PageContentRepository pageContentRepository;
@@ -35,13 +36,16 @@ public class BoardService {
 
     /**
      * 하위 페이지 리스트 조회
+     *
      * @param boardType Page
      * @param parentId
+     * @param groupId
      * @return
      */
-    public List<BoardResponseDto> getSubPageList(BoardType boardType, Long parentId) {
+    public List<BoardResponseDto> getSubPageList(BoardType boardType, Long parentId, Long groupId) {
+        Group group = groupRepository.findById(groupId).get();
 
-        return boardQuerydslRepository.findSubPages(boardType, parentId, getCurrentAuthenticatedUser().getGroup())
+        return boardQuerydslRepository.findSubPages(boardType, parentId, group)
                 .stream()
                 .map(board -> new BoardResponseDto(board, board.getChildren()))
                 .collect(Collectors.toList());
@@ -60,11 +64,12 @@ public class BoardService {
 
     @Transactional
     public Long post(BoardRequestDto requestDto) {
+        Group group = groupRepository.findById(requestDto.getGroupId()).get();
 
         Board board = Board.builder()
                 .title(requestDto.getTitle())
                 .type(BoardType.valueOf(requestDto.getType()))
-                .group(getCurrentAuthenticatedUser().getGroup())
+                .group(group)
                 .build();
 
         board.addText(requestDto.getContent());
@@ -85,11 +90,14 @@ public class BoardService {
 
     /**
      * post a blank page for parent page
+     *
      * @param parentId
+     * @param groupId
      * @return
      */
     @Transactional
-    public Long postPageFor(Long parentId) {
+    public Long postPageFor(Long parentId, Long groupId) {
+        Group group = groupRepository.findById(groupId).get();
 
         Optional<Board> parent =
                 Optional.ofNullable(parentId)
@@ -99,7 +107,7 @@ public class BoardService {
                                         .orElseThrow(() -> new IllegalArgumentException("NOT EXIST"))
                         );
 
-        Board blankBoard = new Board(NON_TITLE, BoardType.PAGE, getCurrentAuthenticatedUser().getGroup());
+        Board blankBoard = new Board(NON_TITLE, BoardType.PAGE, group);
         blankBoard.addText(NULL_STRING);
 
         parent.ifPresent(p -> p.addChild(blankBoard));
@@ -109,20 +117,13 @@ public class BoardService {
         return blankBoard.getId();
     }
 
-    private AppUserDetails getCurrentAuthenticatedUser() {
-        Object currentUser = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if(currentUser instanceof AppUserDetails) return (AppUserDetails) currentUser;
-
-        throw new IllegalStateException("Not Authenticated");
-    }
-
     @Transactional
     public void deletePage(Long id) {
         Board deleteTarget = boardRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("EMPTY"));
 
-        Assert.state(deleteTarget.getGroup().equals(getCurrentAuthenticatedUser().getGroup()),
-                "DO NOT HAVE AUTH");
+//        Assert.state(deleteTarget.getGroup().equals(getCurrentAuthenticatedUser().getGroup()),
+//                "DO NOT HAVE AUTH");
 
         if (!deleteTarget.getType().equals(BoardType.PAGE))
             throw new IllegalArgumentException("NOT SAME TYPE");

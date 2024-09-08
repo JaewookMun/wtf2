@@ -4,14 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class GroupDto {
+public class GroupInfo {
     private Long id;
     private String name;
-    private String guid;
 
-    public GroupDto(Long id, String name, String guid) {
+    public GroupInfo(Long id, String name) {
         this.id = id;
         this.name = name;
-        this.guid = guid;
     }
 }

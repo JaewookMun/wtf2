@@ -22,7 +22,6 @@ spring:
 
   config:
     import:
-      - application-api.yml
       - application-oauth.yml
 
 

@@ -1,5 +1,6 @@
 package com.wtf2.erp.user.domain;
 
+import com.wtf2.erp.association.domain.UserGroup;
 import com.wtf2.erp.group.domain.Group;
 import com.wtf2.erp.dept.domain.Dept;
 import jakarta.persistence.*;
@@ -7,6 +8,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "`USER`")
@@ -38,9 +42,11 @@ public class User {
     @JoinColumn(name = "dept_id")
     private Dept dept;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id")
-    private Group group;
+    /**
+     * cascade(remove), orphanRemoval option 모두 적용하면 안됨!!
+     */
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST})
+    private List<UserGroup> userGroups = new ArrayList<>();
 
     @Builder
     public User(Dept dept, String name, String loginId, String password, Role role) {
@@ -56,7 +62,9 @@ public class User {
         this.mobile = mobile;
     }
 
-    public void addGroup() {
-
+    public void addGroup(UserGroup userGroup) {
+        if(userGroups.isEmpty()) userGroup.activate();
+        userGroups.add(userGroup);
+        userGroup.setUser(this);
     }
 }

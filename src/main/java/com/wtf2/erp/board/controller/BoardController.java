@@ -6,9 +6,12 @@ import com.wtf2.erp.board.service.BoardService;
 import com.wtf2.erp.common.dto.DataTableRequest;
 import com.wtf2.erp.common.dto.DataTableResponse;
 import com.wtf2.erp.common.dto.JsonResponse;
+import com.wtf2.erp.config.security.form.AppUserDetails;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,7 +43,9 @@ public class BoardController {
     }
 
     @PostMapping
-    public JsonResponse<Long> post(@RequestBody BoardRequestDto requestDto) {
+    public JsonResponse<Long> post(HttpServletRequest request,
+                                   @RequestBody BoardRequestDto requestDto) {
+        requestDto.setGroupId((Long) request.getAttribute("groupId"));
         System.out.println("requestDto = " + requestDto);
 
         return JsonResponse.succeed()
@@ -62,17 +67,20 @@ public class BoardController {
      * 만약 상위 page가 존재하지 않을 경우 boardId = -1
      */
     @PostMapping("/page/{boardId}")
-    public JsonResponse<Long> postPage(@PathVariable(name = "boardId") Long boardId) {
+    public JsonResponse<Long> postPage(HttpServletRequest request,
+                                       @PathVariable(name = "boardId") Long boardId) {
         log.info("boardId: {}", boardId);
 
         return JsonResponse.succeed()
-                .buildWith(boardService.postPageFor(boardId));
+                .buildWith(boardService.postPageFor(boardId, (Long) request.getAttribute("groupId")));
     }
 
     @GetMapping("/page/{boardId}/sub-items")
-    public JsonResponse<List<BoardResponseDto>> subItems(@PathVariable(name = "boardId") Long id) {
+    public JsonResponse<List<BoardResponseDto>> subItems(HttpServletRequest request,
+                                                         @PathVariable(name = "boardId") Long id) {
+        Long groupId = (Long) request.getAttribute("groupId");
 
-        return JsonResponse.succeed().buildWith(boardService.getSubPageList(BoardType.PAGE, id));
+        return JsonResponse.succeed().buildWith(boardService.getSubPageList(BoardType.PAGE, id, groupId));
     }
 
     @DeleteMapping("/page/{boardId}")

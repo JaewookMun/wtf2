@@ -18,11 +18,12 @@ public class RegisteredUserInterceptor implements HandlerInterceptor {
                 .getAuthentication()
                 .getPrincipal();
 
-        if(userDetails.getGroup() == null) {
+        if(userDetails.getGroupInfo() == null) {
             response.sendRedirect("/groups/registration");
 
             return false;
         }
+        request.setAttribute("groupId", userDetails.getGroupInfo().getId());
 
         return true;
     }

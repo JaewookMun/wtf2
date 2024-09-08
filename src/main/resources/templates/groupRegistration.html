@@ -30,71 +30,44 @@
 </head>
 <body>
     <div class="content-xxl">
-        <div>
-<!--            TODO: group이 null인 사용자를 위한 페이지-->
-            GROUP REGISTRATION - TEMP
-        </div>
         <div class="authentication-wrapper authentication-basic container-p-y>">
-            <div class="authentication-inner">
+            <div class="authentication-inner" style="max-width: 650px !important;">
                 <div class="card">
-                    <div class="card-body">
-
-                        <h4 class="mb-2">LOGIN</h4>
-                        <p class="mb-4">Start with your account</p>
-                        <p id="welcomeMsg" class="d-none">success to join us! let's enter your account!</p>
-
-                        <form id="loginForm" class="mb-3" method="post" action="/login">
-                            <div class="mb-3">
-                                <label for="loginId" class="form-label">로그인아이디 (e-mail)</label>
-                                <input
-                                        type="text"
-                                        id="loginId"
-                                        name="username"
-                                        class="form-control"
-                                        placeholder="Enter your email for login (xxxxx@xxx.xx)"
-                                />
-
-                                <div class="mb-3 form-password-toggle">
-                                    <div class="d-flex justify-content-between">
-                                        <label class="form-label" for="password">Password</label>
-                                    </div>
-                                    <div class="input-group input-group-merge">
-                                        <input
-                                                type="password"
-                                                id="password"
-                                                class="form-control"
-                                                name="password"
-                                                placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                                                aria-describedby="password"
-                                        />
-                                        <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
-                                    </div>
+                    <div id="optionContainer" class="card-body">
+                        <div class="text-center">
+                            <h4 class="mb-2">WTF2</h4>
+                            <p class="mb-4">Work together finish faster!</p>
+                        </div>
+                        <div class="py-5 option-choice">
+                            <div class="row">
+                                <div class="col-9 d-flex align-items-center">
+                                    <i class='bx bx-folder-plus'></i>
+                                    <span class="ms-2">새로운 그룹을 생성하세요</span>
+                                </div>
+                                <div class="col-3 text-center">
+                                    <button id="createGroupBtn" class="btn btn-primary">그룹 생성</button>
                                 </div>
                             </div>
-                            <div class="mb-3">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="remember-me" />
-                                    <label class="form-check-label" for="remember-me"> Remember Me </label>
+                            <div class="row mt-3">
+                                <div class="col-9 d-flex align-items-center">
+                                    <i class='bx bx-envelope'></i>
+                                    <span class="ms-2">기존 그룹에 대한 참여코드가 있나요?</span>
+                                </div>
+                                <div class="col-3 text-center">
+                                    <button class="btn btn-primary">코드 입력</button>
                                 </div>
                             </div>
-                            <div class="mb-3">
-                                <button class="btn btn-primary d-grid w-100" type="submit">Sign in</button>
-                            </div>
-                        </form>
-
-                        <p class="text-center">
-                            <span>처음이신가요?</span>
-                            <a href="" data-bs-toggle="modal" data-bs-target="#registerModal">
-                                <span>계정 새로 생성하기</span>
-                            </a>
-                        </p>
-                        <div>
-                            <div>start with social account</div>
-                            <div>
-                                <a href="/oauth2/authorization/naver">
-                                    <img src="/images/naver/btnG_icon_circle.png" width="45px" height="45px">
-                                </a>
-                            </div>
+                        </div>
+                        <div class="py-5 group-creation d-none">
+                            <form id="groupCreationForm" method="post" action="/groups/registration">
+                                <div>
+                                    <span>회사 또는 팀의 이름입니다. 그룹의 이름을 입력해주세요</span>
+                                </div>
+                                <div class="row">
+                                    <input type="text" name="groupName" class="col-9 form-control">
+                                    <button type="submit" class="col-3 btn btn-secondary">생성</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -102,49 +75,7 @@
         </div>
     </div>
 
-    <!-- register Modal -->
-    <div class="modal fade" id="registerModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">계정 생성하기</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body register-user d-none">
-                    <div class="row g-2">
-                        <div class="col mb-0">
-                            <label for="userName" class="form-label">사용자 이름</label>
-                            <input type="text" id="userName" name="userName" class="form-control" />
-                        </div>
-                    </div>
-                    <div class="row g-2">
-                        <div class="col mb-0">
-                            <label for="email" class="form-label">e-mail (로그인 정보)</label>
-                            <input type="text" id="email" name="email" class="form-control" placeholder="xxxx@xxx.xx" />
-                        </div>
-                    </div>
-                    <div class="row g-2">
-                        <div class="col mb-0">
-                            <label for="registerPassword" class="form-label">비밀번호</label>
-                            <input type="password" id="registerPassword" name="password" class="form-control"/>
-                        </div>
-                    </div>
-                    <div class="row g-2">
-                        <div class="col mb-0">
-                            <label for="registerPassword2" class="form-label">비밀번호 확인</label>
-                            <input type="password" id="registerPassword2" name="re-password" class="form-control"/>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer d-none">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">취소</button>
-                    <button id="registerBtn" type="button" class="btn btn-primary">등록하기</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- search registered Company Modal -->
+    <!-- [code] search registered Group Modal -->
     <div class="modal fade" id="registeredCompanyModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -180,67 +111,21 @@
     <script th:inline="javascript">
 
         $(function () {
-            initModalSetting();
+            initSetting();
         });
 
-        function initModalSetting() {
+        function initSetting() {
+            $('#createGroupBtn').on('click', function() {
+                $('#optionContainer .option-choice').addClass('d-none');
+                $('#optionContainer .group-creation').removeClass('d-none');
+            });
+
+
+            // TODO: function related with Modal for searching with group code
             // Modal screen
             $('#registerModal').on('shown.bs.modal', function() {
                 $('#registerModal input[name=userName]').focus();
             });
-
-            $('#registerBtn').click(function() {
-                // parameter setup
-                let params = {};
-                params.userName = $('#userName').val();
-                params.email = $('#email').val();
-                // 암호화 처리해서 보내기
-                params.password = $('#registerPassword').val();
-
-                $.ajax({
-                    url: '/users/registration',
-                    method: 'POST',
-                    data: params,
-                    success: function(res) {
-                        if (res.result == 'SUCCESS') {
-                            // $('#loginId').val(res.data);
-                            //
-                            // const form = document.getElementById('loginForm');
-                            // const input = document.createElement('input');
-                            // input.type = 'hidden';
-                            // input.name = 'createdUserFlag';
-                            // input.value = 'true';
-                            // form.insertBefore(input, form.lastElementChild);
-
-                            form.submit();
-                        }
-                        console.log(res);
-                    },
-                    error: function(e) {
-                        console.log(e)
-                    }
-                });
-            });
-
-            /*$('#searchRegistered').click(function() {
-                let name = $('#registeredCompanyModal input[name=companyName]').val();
-                console.log('registered name: ', name);
-
-                registeredCompanyListTable = $('#registeredCompanyListTable').dataTable({
-                    serverSide: true,
-                    destroy: true,
-                    ajax: {
-                        url: '/companies/search?name=' + name + '&isRegistered=true',
-                        type: 'GET',
-                        dataSrc: function(res) {
-                            // console.log('response> ', res);
-
-                            return res.data;
-                        }
-                    },
-                    columnDefs: setRegisteredCompanyListColumnDefs(),
-                });
-            });*/
         }
     </script>
 </body>

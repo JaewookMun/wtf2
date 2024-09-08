@@ -30,7 +30,7 @@ public class ErpApplication {
 	private void init() {
 		String loginId = "test";
 		userService.register("tester", loginId, "123");
-		Long groupId = groupService.register("WTF2", loginId);
+		Long groupId = groupService.register("WTF2 - ErpApplication", loginId);
 
 		Group group = groupService.getGroupById(groupId);
 		Board notice = new Board("공지사항1", BoardType.NOTICE, group);

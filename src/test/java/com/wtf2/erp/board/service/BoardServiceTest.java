@@ -24,7 +24,7 @@ class BoardServiceTest {
     @Test
     @DisplayName("페이지 조회")
     void test() {
-        List<BoardResponseDto> rootList = boardService.getSubPageList(BoardType.PAGE, null);
+        List<BoardResponseDto> rootList = boardService.getSubPageList(BoardType.PAGE, null, 1L);
 
         if (!rootList.isEmpty())
             assertThat(rootList.get(0).getTitle()).isNotBlank();
@@ -43,7 +43,7 @@ class BoardServiceTest {
         boardService.deletePage(id);
 
         //then
-        int subCount = boardService.getSubPageList(BoardType.PAGE, id).size();
+        int subCount = boardService.getSubPageList(BoardType.PAGE, id, 1L).size();
 
         assertThat(subCount).isEqualTo(0);
     }
