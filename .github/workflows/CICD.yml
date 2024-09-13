@@ -22,6 +22,7 @@ jobs:
 
       - name: Build with gradle
         run: |
+          chmod 777 ./gradlew
           ./gradlew build
 
       - name: Login to DockerHub
