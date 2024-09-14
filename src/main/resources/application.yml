@@ -79,7 +79,8 @@ spring:
 
 
   datasource:
-    url: jdbc:h2:tcp://localhost/D:/h2/wtf2;MODE=MySQL
+#    url: jdbc:h2:tcp://localhost/D:/h2/wtf2;MODE=MySQL
+    url: jdbc:h2:mem:wtf2;MODE=MySQL
     username: sa
     password:
     driver-class-name: org.h2.Driver
