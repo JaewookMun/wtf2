@@ -42,7 +42,7 @@ public class WebController {
         return ((AppUserDetails) authentication.getPrincipal()).getGroupInfo().getName();
     }
 
-    @GetMapping("/")
+    @GetMapping
     public String home() {
         System.out.println("home()");
         SecurityContext context = SecurityContextHolder.getContext();
