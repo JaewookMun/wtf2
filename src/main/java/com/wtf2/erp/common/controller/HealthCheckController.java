@@ -34,8 +34,6 @@ public class HealthCheckController {
 
     @GetMapping("/env")
     public ResponseEntity<?> getEnv() {
-        Map<String, String> responseMap = new HashMap<>();
-
-        return ResponseEntity.ok(responseMap);
+        return ResponseEntity.ok(env);
     }
 }

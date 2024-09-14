@@ -1,4 +1,4 @@
-name: CI
+name: CICD
 
 on:
   push:
@@ -77,8 +77,8 @@ jobs:
           key: ${{ secrets.AZURE_SSH_KEY }}
           script_stop: true
           script: |
-            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/live_server:latest
-            sudo docker-compose -f docker-compose-${{env.TARGET_UPSTREAM}}.yml up -d
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/wtf2:latest
+            sudo docker-compose -f ~/docker-compose/docker-compose-${{env.TARGET_UPSTREAM}}.yml up -d
       
       - name: Check deploy server URL
         uses: jtalk/url-health-check-action@v3
