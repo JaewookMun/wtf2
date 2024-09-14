@@ -20,11 +20,11 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: create application-secret.yml
+      - name: Create application-secret.yml
         run: |
           mkdir -p src/main/resources
           echo "${{ secrets.APPLICATION_SECRET_YML }}" | base64 --decode > src/main/resources/application-secret.yml
-          find src
+          find src -name "*.yml"
 
       - name: Build with gradle
         run: |
