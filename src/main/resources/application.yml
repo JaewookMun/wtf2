@@ -73,7 +73,7 @@ spring:
     activate:
       on-profile: common
     import:
-      - application-oauth.yml
+      - application-secret.yml
   application:
     name: wtf2
 

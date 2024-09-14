@@ -1,7 +1,7 @@
 spring:
-#  config:
-#    import:
-#      - application-oauth.yml
+  config:
+    import:
+      - application-secret.yml
   datasource:
     url: jdbc:h2:mem:wtf2
     username: sa
