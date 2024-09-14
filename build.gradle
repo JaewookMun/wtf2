@@ -1,14 +1,7 @@
-buildscript {
-	ext {
-		queryDslVersion = "5.0.0"
-	}
-}
-
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.1.11'
 	id 'io.spring.dependency-management' version '1.1.4'
-	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
 group = 'com.wtf2'
@@ -26,6 +19,10 @@ configurations {
 
 repositories {
 	mavenCentral()
+}
+
+ext {
+	queryDslVersion = "5.0.0"
 }
 
 dependencies {
@@ -52,7 +49,7 @@ dependencies {
 
 	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
 
-	// compileQuerydsl warning 제거
+	// compileQuerydsl(compileJava) warning 제거
 	implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
 	compileOnly 'org.projectlombok:lombok'
@@ -67,22 +64,4 @@ tasks.named('bootBuildImage') {
 
 tasks.named('test') {
 	useJUnitPlatform()
-}
-
-// gradle 8.x 부터 $buildDir의 사용은 Deprecated 되었다.
-//def querydslDir = "$buildDir/generated/querydsl"
-def querydslDir = layout.buildDirectory.dir("generated/querydsl").get().asFile
-
-querydsl {
-	jpa = true
-	querydslSourcesDir = querydslDir
-}
-sourceSets {
-	main.java.srcDir querydslDir
-}
-configurations {
-	querydsl.extendsFrom compileClasspath
-}
-compileQuerydsl {
-	options.annotationProcessorPath = configurations.querydsl
 }
