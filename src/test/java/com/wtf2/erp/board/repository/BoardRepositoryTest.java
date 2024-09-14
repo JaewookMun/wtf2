@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @SpringBootTest
 @Transactional
 class BoardRepositoryTest {
@@ -27,17 +29,22 @@ class BoardRepositoryTest {
     @Test
     @DisplayName("EntityGraph test")
     void test() {
-
+        // given
         BoardRequestDto dto = new BoardRequestDto();
         dto.setType(BoardType.NOTICE.name());
         dto.setTitle("[notice] 공지사항1");
         dto.setContent("안녕하세요\n공지사항입니다.");
+        dto.setGroupId(1L);
 
-        boardService.post(dto);
+        // when
+        Long id = boardService.post(dto);
 
         boardRepository.flush();
-        Board board = boardRepository.findById(1L).get();
+        Board board = boardRepository.findById(id).get();
         System.out.println("board = " + board);
+
+        // then
+        assertEquals("[notice] 공지사항1", board.getTitle());
     }
 
     @Test
@@ -68,6 +75,4 @@ class BoardRepositoryTest {
 
         boardRepository.save(parent);
     }
-
-
 }

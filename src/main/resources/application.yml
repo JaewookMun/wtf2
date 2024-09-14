@@ -1,9 +1,82 @@
+spring:
+  profiles:
+    active: local
+    group:
+      local: local, common, secret
+      blue: blue, common, secret
+      green: green, common, secret
+
 server:
-  port: 8080
+  env: blue
+
+---
 
 spring:
+  config:
+    activate:
+      on-profile: local
+  security:
+    oauth2:
+      client:
+        registration:
+          naver:
+            redirect-uri: http://localhost:8080/login/oauth2/code/naver
+
+server:
+  port: 8080
+  address: localhost
+
+serverName: local_server
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: blue
+  security:
+    oauth2:
+      client:
+        registration:
+          naver:
+            redirect-uri: http://10.0.0.4/login/oauth2/code/naver
+
+server:
+  port: 8080
+  address: 10.0.0.4
+
+serverName: blue_server
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: green
+  security:
+    oauth2:
+      client:
+        registration:
+          naver:
+            redirect-uri: http://10.0.0.4/login/oauth2/code/naver
+
+server:
+  port: 8081
+  address: 10.0.0.4
+
+serverName: green_server
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: common
+    import:
+      - application-oauth.yml
   application:
     name: wtf2
+
 
   datasource:
     url: jdbc:h2:tcp://localhost/D:/h2/wtf2;MODE=MySQL
@@ -19,11 +92,6 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
-
-  config:
-    import:
-      - application-oauth.yml
-
 
 logging.level:
     org.hibernate.orm.jdbc.bind: trace # parameter binding

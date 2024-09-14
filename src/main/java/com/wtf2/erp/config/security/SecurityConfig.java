@@ -24,6 +24,8 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(request -> request
+                        .requestMatchers("/hc", "/env")
+                        .permitAll()
                         // permit resources
                         .requestMatchers(
                         "/modules/**",
