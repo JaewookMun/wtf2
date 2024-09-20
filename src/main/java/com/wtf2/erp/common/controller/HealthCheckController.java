@@ -1,8 +1,11 @@
 package com.wtf2.erp.common.controller;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
@@ -35,5 +38,14 @@ public class HealthCheckController {
     @GetMapping("/env")
     public ResponseEntity<?> getEnv() {
         return ResponseEntity.ok(env);
+    }
+
+    @GetMapping("/env/{portNumber}")
+    public ResponseEntity<?> getStatus(@PathVariable Integer portNumber) {
+
+        if (Integer.valueOf(serverPort).equals(portNumber)) return ResponseEntity.ok(HttpStatus.OK);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .build();
     }
 }

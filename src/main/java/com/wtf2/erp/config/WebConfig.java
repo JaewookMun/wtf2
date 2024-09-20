@@ -19,7 +19,7 @@ public class WebConfig implements WebMvcConfigurer {
                         "/modules/**",
                         "/css/**", "/js/**", "/images/**",
                         "/users/registration", "/groups/registration",
-                        "/hc", "/env"
+                        "/hc", "/env/**"
                 );
     }
 
