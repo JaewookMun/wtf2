@@ -45,7 +45,7 @@ public class HealthCheckController {
 
         if (Integer.valueOf(serverPort).equals(portNumber)) return ResponseEntity.ok(HttpStatus.OK);
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
                 .build();
     }
 }
