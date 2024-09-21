@@ -39,11 +39,11 @@ spring:
       client:
         registration:
           naver:
-            redirect-uri: http://10.0.0.4/login/oauth2/code/naver
+            redirect-uri: http://3.39.250.76/login/oauth2/code/naver
 
 server:
   port: 8080
-  serverAddress: 10.0.0.4
+  serverAddress: 3.39.250.76
 
 serverName: blue_server
 
@@ -58,11 +58,11 @@ spring:
       client:
         registration:
           naver:
-            redirect-uri: http://10.0.0.4/login/oauth2/code/naver
+            redirect-uri: http://3.39.250.76/login/oauth2/code/naver
 
 server:
   port: 8081
-  serverAddress: 10.0.0.4
+  serverAddress: 3.39.250.76
 
 serverName: green_server
 
@@ -77,6 +77,10 @@ spring:
   application:
     name: wtf2
 
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
 
   datasource:
 #    url: jdbc:h2:tcp://localhost/D:/h2/wtf2;MODE=MySQL
